@@ -104,14 +104,14 @@ public class InvestmentsIntroductionService {
             fromDB.setTitleEng(introduction.getTitleEng());
         }
 
-        if (introduction.getSubTitleUz() != null) {
-            fromDB.setSubTitleUz(introduction.getSubTitleUz());
+        if (introduction.getDescriptionUz() != null) {
+            fromDB.setDescriptionUz(introduction.getDescriptionUz());
         }
-        if (introduction.getSubTitleRu() != null) {
-            fromDB.setSubTitleRu(introduction.getSubTitleRu());
+        if (introduction.getDescriptionRu() != null) {
+            fromDB.setDescriptionRu(introduction.getDescriptionRu());
         }
-        if (introduction.getSubTitleEn() != null) {
-            fromDB.setSubTitleEn(introduction.getSubTitleEn());
+        if (introduction.getDescriptionEn() != null) {
+            fromDB.setDescriptionEn(introduction.getDescriptionEn());
         }
 
 

@@ -37,19 +37,19 @@ public class InvestmentsIntroductionDTO {
         switch (lang.toLowerCase()) {
             case "uz": {
                 this.title = introduction.getTitleUz();
-                this.subTitle = introduction.getSubTitleUz();
+                this.subTitle = introduction.getDescriptionUz();
                 break;
             }
 
             case "ru": {
                 this.title = introduction.getTitleRu();
-                this.subTitle = introduction.getSubTitleRu();
+                this.subTitle = introduction.getDescriptionUz();
                 break;
             }
 
             case "en": {
                 this.title = introduction.getTitleEng();
-                this.subTitle = introduction.getSubTitleEn();
+                this.subTitle = introduction.getDescriptionUz();
                 break;
             }
 

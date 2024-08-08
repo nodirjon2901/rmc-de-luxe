@@ -29,11 +29,11 @@ public class InvestmentsIntroduction {
 
     String titleRu;
 
-    String subTitleUz;
+    String descriptionUz;
 
-    String subTitleRu;
+    String descriptionRu;
 
-    String subTitleEn;
+    String descriptionEn;
 
     @OneToMany
     List<IntroductionDescription> descriptions;
