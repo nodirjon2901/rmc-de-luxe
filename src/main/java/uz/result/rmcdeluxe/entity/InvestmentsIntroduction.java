@@ -1,0 +1,40 @@
+package uz.result.rmcdeluxe.entity;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity(name = "investment_introduction")
+public class InvestmentsIntroduction {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
+    @OneToOne
+    Photo photo;
+
+    String titleUz;
+
+    String titleEng;
+
+    String titleRu;
+
+    String subTitleUz;
+
+    String subTitleRu;
+
+    String subTitleEn;
+
+    @OneToMany
+    List<IntroductionDescription> descriptions;
+}
