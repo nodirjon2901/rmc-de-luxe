@@ -1,4 +1,4 @@
-package uz.result.rmcdeluxe.service;
+package uz.result.rmcdeluxe.service.investment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,19 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import uz.result.rmcdeluxe.entity.Banner;
-import uz.result.rmcdeluxe.entity.BannerSlider;
-import uz.result.rmcdeluxe.entity.Investments;
-import uz.result.rmcdeluxe.entity.MainPageInvestment;
+import uz.result.rmcdeluxe.entity.investment.Investments;
 import uz.result.rmcdeluxe.exception.AlreadyExistsException;
 import uz.result.rmcdeluxe.exception.NotFoundException;
 import uz.result.rmcdeluxe.payload.ApiResponse;
-import uz.result.rmcdeluxe.payload.InvestmentsDTO;
-import uz.result.rmcdeluxe.payload.MainPageInvestmentDTO;
-import uz.result.rmcdeluxe.repository.InvestmentsRepository;
+import uz.result.rmcdeluxe.payload.investment.InvestmentsDTO;
+import uz.result.rmcdeluxe.repository.investment.InvestmentsRepository;
+import uz.result.rmcdeluxe.service.PhotoService;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service

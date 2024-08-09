@@ -1,4 +1,4 @@
-package uz.result.rmcdeluxe.entity;
+package uz.result.rmcdeluxe.entity.investment;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

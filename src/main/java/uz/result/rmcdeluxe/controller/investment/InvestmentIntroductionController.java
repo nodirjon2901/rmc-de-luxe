@@ -1,51 +1,20 @@
-package uz.result.rmcdeluxe.controller;
+package uz.result.rmcdeluxe.controller.investment;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import uz.result.rmcdeluxe.entity.Investments;
-import uz.result.rmcdeluxe.entity.InvestmentsIntroduction;
-import uz.result.rmcdeluxe.entity.MainPageInvestment;
+import uz.result.rmcdeluxe.entity.investment.InvestmentsIntroduction;
 import uz.result.rmcdeluxe.payload.ApiResponse;
-import uz.result.rmcdeluxe.service.InvestmentsIntroductionService;
-import uz.result.rmcdeluxe.service.InvestmentsService;
+import uz.result.rmcdeluxe.service.investment.InvestmentsIntroductionService;
 
 @RestController
 @RequestMapping("/v1/investments")
 @RequiredArgsConstructor
-public class InvestmentsController {
-
-    private final InvestmentsService investmentsService;
+public class InvestmentIntroductionController {
 
     private final InvestmentsIntroductionService introductionService;
 
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<Investments>> createInvestment(
-            @RequestParam(value = "json") String investment,
-            @RequestPart(value = "photo") MultipartFile photo
-    ) {
-        return investmentsService.create(investment, photo);
-    }
-
-    @GetMapping("/get")
-    public ResponseEntity<ApiResponse<?>> getInvestment(
-            @RequestHeader(value = "Accept-Language",required = false) String lang
-    ) {
-        return investmentsService.get(lang);
-    }
-
-    @PutMapping("/update")
-    public ResponseEntity<ApiResponse<Investments>> update(
-            @RequestBody Investments investments
-    ) {
-        return investmentsService.update(investments);
-    }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<ApiResponse<?>> deleteInvestment() {
-        return investmentsService.delete();
-    }
 
     @PostMapping("/introduction/create")
     public ResponseEntity<ApiResponse<InvestmentsIntroduction>> createIntroduction(
@@ -70,16 +39,17 @@ public class InvestmentsController {
         return introductionService.get(lang);
     }
 
-  /*  @PutMapping("/update")
+    @PutMapping("/update/introduction")
     public ResponseEntity<ApiResponse<InvestmentsIntroduction>> updateIntroduction(
             @RequestBody InvestmentsIntroduction introduction
     ) {
         return introductionService.update(introduction);
-    }*/
+    }
 
-    @DeleteMapping("/investment/delete")
+    @DeleteMapping("/introduction/delete")
     public ResponseEntity<ApiResponse<?>> deleteIntroduction() {
         return introductionService.delete();
     }
+
 
 }

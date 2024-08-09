@@ -1,11 +1,11 @@
-package uz.result.rmcdeluxe.payload;
+package uz.result.rmcdeluxe.payload.investment;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import uz.result.rmcdeluxe.entity.Investments;
+import uz.result.rmcdeluxe.entity.investment.Investments;
 import uz.result.rmcdeluxe.entity.Photo;
 import uz.result.rmcdeluxe.exception.LanguageNotSupported;
 @Data

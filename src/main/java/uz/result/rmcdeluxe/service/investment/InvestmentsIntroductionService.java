@@ -1,4 +1,4 @@
-package uz.result.rmcdeluxe.service;
+package uz.result.rmcdeluxe.service.investment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,20 +7,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import uz.result.rmcdeluxe.entity.IntroductionDescription;
-import uz.result.rmcdeluxe.entity.Investments;
-import uz.result.rmcdeluxe.entity.InvestmentsIntroduction;
+import uz.result.rmcdeluxe.entity.investment.IntroductionDescription;
+import uz.result.rmcdeluxe.entity.investment.InvestmentsIntroduction;
 import uz.result.rmcdeluxe.exception.AlreadyExistsException;
 import uz.result.rmcdeluxe.exception.NotFoundException;
 import uz.result.rmcdeluxe.payload.ApiResponse;
-import uz.result.rmcdeluxe.payload.InvestmentsDTO;
-import uz.result.rmcdeluxe.payload.InvestmentsIntroductionDTO;
-import uz.result.rmcdeluxe.repository.IntroductionDescriptionRepository;
-import uz.result.rmcdeluxe.repository.InvestmentsIntroductionRepository;
-import uz.result.rmcdeluxe.repository.PhotoRepository;
+import uz.result.rmcdeluxe.payload.investment.InvestmentsIntroductionDTO;
+import uz.result.rmcdeluxe.repository.investment.IntroductionDescriptionRepository;
+import uz.result.rmcdeluxe.repository.investment.InvestmentsIntroductionRepository;
+import uz.result.rmcdeluxe.service.PhotoService;
+
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -61,16 +61,20 @@ public class InvestmentsIntroductionService {
         if (!investmentsIntroductionOptional.isPresent()) {
             throw new NotFoundException("Investment introduction not created");
         }
-        IntroductionDescription introductionDescription = null;
+
         try {
-            introductionDescription = objectMapper.readValue(descriptions, IntroductionDescription.class);
+            IntroductionDescription  introductionDescription = objectMapper.readValue(descriptions, IntroductionDescription.class);
+            IntroductionDescription save1 = descriptionRepository.save(introductionDescription);
+            InvestmentsIntroduction investmentsIntroduction = investmentsIntroductionOptional.get();
+            investmentsIntroduction.getDescriptions().add(save1);
+            InvestmentsIntroduction save = introductionRepository.save(investmentsIntroduction);
+
+            response.setData(save);
+            return ResponseEntity.ok(response);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        investmentsIntroductionOptional.get().setDescriptions(List.of(introductionDescription));
-        InvestmentsIntroduction save = introductionRepository.save(investmentsIntroductionOptional.get());
-        response.setData(save);
-        return ResponseEntity.ok(response);
+
 
     }
 
@@ -113,6 +117,29 @@ public class InvestmentsIntroductionService {
         if (introduction.getDescriptionEn() != null) {
             fromDB.setDescriptionEn(introduction.getDescriptionEn());
         }
+
+        if (introduction.getDescriptions()!=null){
+            List<IntroductionDescription> descriptions = introduction.getDescriptions();
+            List<IntroductionDescription> descriptions1 = fromDB.getDescriptions();
+            for (IntroductionDescription description : descriptions) {
+                for (IntroductionDescription introductionDescription : descriptions1) {
+                    if (Objects.equals(description.getId(), introductionDescription.getId())){
+                        if (description.getDescriptionUz()!=null){
+                            introductionDescription.setDescriptionUz(description.getDescriptionUz());
+                        }
+                        if (description.getDescriptionEn()!=null){
+                            introductionDescription.setDescriptionEn(description.getDescriptionEn());
+                        }
+                        if (description.getDescriptionRu()!=null){
+                            introductionDescription.setDescriptionRu(description.getDescriptionRu());
+                        }
+                    }
+                }
+
+            }
+            fromDB.setDescriptions(descriptions1);
+        }
+
 
 
         response.setData(introductionRepository.save(fromDB));

@@ -1,13 +1,14 @@
-package uz.result.rmcdeluxe.payload;
+package uz.result.rmcdeluxe.payload.investment;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import uz.result.rmcdeluxe.entity.InvestmentsIntroduction;
+import uz.result.rmcdeluxe.entity.investment.InvestmentsIntroduction;
 import uz.result.rmcdeluxe.entity.Photo;
 import uz.result.rmcdeluxe.exception.LanguageNotSupported;
+import uz.result.rmcdeluxe.payload.investment.IntroductionDescriptionDTO;
 
 import java.util.ArrayList;
 import java.util.List;

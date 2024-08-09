@@ -1,6 +1,9 @@
-package uz.result.rmcdeluxe.entity;
+package uz.result.rmcdeluxe.entity.investment;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,26 +14,23 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity(name = "investment")
-public class Investments {
+@Entity(name = "purchase_process_step")
+public class PurchaseProcessStep {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @OneToOne
-    Photo photo;
+    String titleUz;
 
-    String headingUz;
+    String titleRu;
 
-    String headingRu;
-
-    String headingEn;
+    String titleEn;
 
     String descriptionUz;
 
     String descriptionRu;
 
     String descriptionEn;
-
 }
