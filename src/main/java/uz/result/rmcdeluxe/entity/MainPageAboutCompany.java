@@ -1,15 +1,13 @@
 package uz.result.rmcdeluxe.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -41,7 +39,7 @@ public class MainPageAboutCompany {
     @PostPersist
     @PostUpdate
     void setOptionId() {
-        if (options != null) {
+        if (this.options != null) {
             this.options.forEach(option -> option.setAboutCompany(this));
         }
     }

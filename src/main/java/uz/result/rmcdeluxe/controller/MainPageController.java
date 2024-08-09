@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import uz.result.rmcdeluxe.entity.MainPageAdvantage;
-import uz.result.rmcdeluxe.entity.MainPageInvestment;
-import uz.result.rmcdeluxe.entity.PropertyManagement;
-import uz.result.rmcdeluxe.entity.PropertyManagementOption;
+import uz.result.rmcdeluxe.entity.*;
 import uz.result.rmcdeluxe.payload.ApiResponse;
+import uz.result.rmcdeluxe.service.MainPageAboutCompanyService;
 import uz.result.rmcdeluxe.service.MainPageAdvantageService;
 import uz.result.rmcdeluxe.service.MainPageInvestmentService;
 import uz.result.rmcdeluxe.service.PropertyManagementService;
@@ -23,6 +21,8 @@ public class MainPageController {
     private final MainPageAdvantageService advantageService;
 
     private final PropertyManagementService managementService;
+
+    private final MainPageAboutCompanyService companyService;
 
     @PostMapping("/investment/create")
     public ResponseEntity<ApiResponse<MainPageInvestment>> createInvestment(
@@ -89,11 +89,11 @@ public class MainPageController {
         return advantageService.delete(id);
     }
 
-    @PostMapping("/service/add")
+    @PostMapping("/service/create")
     public ResponseEntity<ApiResponse<PropertyManagement>> addService(
             @RequestBody PropertyManagement management
     ) {
-        return managementService.addOption(management);
+        return managementService.create(management);
     }
 
     @GetMapping("/service/get")
@@ -113,6 +113,33 @@ public class MainPageController {
     @DeleteMapping("/service/delete")
     public ResponseEntity<ApiResponse<?>> deleteService() {
         return managementService.delete();
+    }
+
+    @PostMapping("/about-company/create")
+    public ResponseEntity<ApiResponse<MainPageAboutCompany>> createAboutCompany(
+            @RequestParam(value = "json") String json,
+            @RequestPart(value = "photo") MultipartFile photo
+    ) {
+        return companyService.create(json, photo);
+    }
+
+    @GetMapping("/about-company/get")
+    public ResponseEntity<ApiResponse<?>> find(
+            @RequestHeader(value = "Accept-Language",required = false) String lang
+    ) {
+        return companyService.find(lang);
+    }
+
+    @PutMapping("/about-company/update")
+    public ResponseEntity<ApiResponse<MainPageAboutCompany>> update(
+            @RequestBody MainPageAboutCompany company
+    ) {
+        return companyService.update(company);
+    }
+
+    @DeleteMapping("/about-company/delete")
+    public ResponseEntity<ApiResponse<?>> delete() {
+        return companyService.delete();
     }
 
 }

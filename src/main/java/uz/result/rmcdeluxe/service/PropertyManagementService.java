@@ -1,10 +1,14 @@
 package uz.result.rmcdeluxe.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uz.result.rmcdeluxe.entity.BuildingHeaderFeature;
+import uz.result.rmcdeluxe.entity.BuildingPageHeader;
 import uz.result.rmcdeluxe.entity.PropertyManagement;
 import uz.result.rmcdeluxe.entity.PropertyManagementOption;
+import uz.result.rmcdeluxe.exception.AlreadyExistsException;
 import uz.result.rmcdeluxe.exception.NotFoundException;
 import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.PropertyManagementDTO;
@@ -12,6 +16,7 @@ import uz.result.rmcdeluxe.payload.PropertyManagementOptionDTO;
 import uz.result.rmcdeluxe.repository.PropertyManagementOptionRepository;
 import uz.result.rmcdeluxe.repository.PropertyManagementRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,11 +28,11 @@ public class PropertyManagementService {
 
     private final PropertyManagementOptionRepository optionRepository;
 
-    public ResponseEntity<ApiResponse<PropertyManagement>> addOption(PropertyManagement management){
-        ApiResponse<PropertyManagement> response=new ApiResponse<>();
+    public ResponseEntity<ApiResponse<PropertyManagement>> create(PropertyManagement management) {
+        ApiResponse<PropertyManagement> response = new ApiResponse<>();
         Optional<PropertyManagement> optionalPropertyManagement = managementRepository.findAll().stream().findFirst();
         if (optionalPropertyManagement.isPresent()) {
-            return update(management);
+            throw new AlreadyExistsException("Property service management section is already created");
         }
         PropertyManagement save = managementRepository.save(management);
         response.setData(save);
@@ -36,7 +41,7 @@ public class PropertyManagementService {
 
     public ResponseEntity<ApiResponse<?>> find(String lang) {
         PropertyManagement management = managementRepository.findAll().stream().findFirst()
-                .orElseThrow(() -> new NotFoundException("Property management service is not created yet"));
+                .orElseThrow(() -> new NotFoundException("Property management service section is not created yet"));
         if (lang != null) {
             ApiResponse<PropertyManagementDTO> response = new ApiResponse<>();
             response.setData(new PropertyManagementDTO(management, lang));
@@ -49,45 +54,47 @@ public class PropertyManagementService {
 
     public ResponseEntity<ApiResponse<PropertyManagement>> update(PropertyManagement management) {
         ApiResponse<PropertyManagement> response = new ApiResponse<>();
-        PropertyManagement fromDB = managementRepository.findAll().stream().findFirst()
-                .orElseThrow(() -> new NotFoundException("Property management service is not created yet"));
+        PropertyManagement fromDb = managementRepository.findById(management.getId())
+                .orElseThrow(() -> new NotFoundException("Property management service section is not found by id: " + management.getId()));
 
         if (management.getOptions() != null) {
             List<PropertyManagementOption> managementOptions = management.getOptions();
-            List<PropertyManagementOption> dbOptions = fromDB.getOptions();
+            List<PropertyManagementOption> dbOptions = fromDb.getOptions();
+            List<PropertyManagementOption> optionsToRemove = new ArrayList<>();
 
             for (PropertyManagementOption managementOption : managementOptions) {
-                for (PropertyManagementOption dbOption : dbOptions) {
-                    if (managementOption.getId() == null) {
-                        PropertyManagementOption save = optionRepository.save(managementOption);
-                        dbOptions.add(save);
-                    }
-                    if (managementOption.getId().equals(dbOption.getId())) {
-
-                        if (managementOption.getDescriptionUz() != null) {
-                            dbOption.setDescriptionUz(managementOption.getDescriptionUz());
-                        }
-                        if (managementOption.getDescriptionRu() != null) {
-                            dbOption.setDescriptionRu(managementOption.getDescriptionRu());
-                        }
-                        if (managementOption.getDescriptionEn() != null) {
-                            dbOption.setDescriptionEn(managementOption.getDescriptionEn());
-                        }
-
-                        if (managementOption.getDescriptionUz() == null &&
-                                managementOption.getDescriptionEn() == null &&
-                                managementOption.getDescriptionRu() == null) {
-                            optionRepository.deleteById(managementOption.getId());
+                if (managementOption.getId() != null) {
+                    for (PropertyManagementOption dbOption : dbOptions) {
+                        if (dbOption.getId().equals(managementOption.getId())) {
+                            if (managementOption.getDescriptionUz() != null) {
+                                dbOption.setDescriptionUz(managementOption.getDescriptionUz());
+                            }
+                            if (managementOption.getDescriptionRu() != null) {
+                                dbOption.setDescriptionRu(managementOption.getDescriptionRu());
+                            }
+                            if (managementOption.getDescriptionEn() != null) {
+                                dbOption.setDescriptionEn(managementOption.getDescriptionEn());
+                            }
+                            if (managementOption.getDescriptionUz() == null && managementOption.getDescriptionRu() == null && managementOption.getDescriptionEn() == null) {
+                                optionsToRemove.add(dbOption);
+                            }
                         }
                     }
+                } else {
+                    managementOption.setPropertyManagement(fromDb);
+                    dbOptions.add(managementOption);
                 }
             }
-
+            for (PropertyManagementOption option : optionsToRemove) {
+                dbOptions.remove(option);
+                optionRepository.delete(option.getId());
+            }
+            managementRepository.saveAndFlush(fromDb);
         }
-
-        response.setData(managementRepository.save(fromDB));
+        response.setData(fromDb);
         return ResponseEntity.ok(response);
     }
+
 
     public ResponseEntity<ApiResponse<?>> delete() {
         ApiResponse<?> response = new ApiResponse<>();
