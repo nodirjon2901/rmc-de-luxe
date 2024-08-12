@@ -13,12 +13,6 @@ import uz.result.rmcdeluxe.service.investment.PurchaseProcessService;
 public class PurchaseProcessController {
     private final PurchaseProcessService processService;
 
-    @PostMapping("/purchase_procces/create")
-    public ResponseEntity<ApiResponse<PurchaseProcess>> createProcess(
-            @RequestParam(value = "json") String procces
-    ) {
-        return processService.create(procces);
-    }
 
     @PostMapping("/purchase_procces/add-step")
     public ResponseEntity<ApiResponse<PurchaseProcess>> addStep(

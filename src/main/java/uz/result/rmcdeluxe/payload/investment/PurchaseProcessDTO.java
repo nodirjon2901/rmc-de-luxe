@@ -26,27 +26,6 @@ public class PurchaseProcessDTO {
     public PurchaseProcessDTO(PurchaseProcess process, String lang){
         this.id=process.getId();
         this.orderNum= process.getOrderNum();
-
-        switch (lang.toLowerCase()){
-            case "uz":
-            {
-                this.title=process.getTitleUz();
-                break;
-            }
-            case "ru":
-            {
-                this.title=process.getTitleRu();
-                break;
-            }
-            case "en":
-            {
-                this.title=process.getTitleEn();
-                break;
-            }
-            default:
-                throw new LanguageNotSupported("Language not supported: " + lang);
-
-        }
     }
 
 }

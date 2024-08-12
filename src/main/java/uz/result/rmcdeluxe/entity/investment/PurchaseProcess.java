@@ -21,12 +21,6 @@ public class PurchaseProcess {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String titleUz;
-
-    String titleRu;
-
-    String titleEn;
-
     @OneToMany
     List<PurchaseProcessStep> steps;
 
