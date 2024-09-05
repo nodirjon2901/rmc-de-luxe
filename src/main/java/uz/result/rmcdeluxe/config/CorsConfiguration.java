@@ -15,16 +15,19 @@ public class CorsConfiguration implements Filter {
 
     public void doFilterInternal(HttpServletRequest request,
                                  HttpServletResponse response,
-                                 FilterChain filterChain) throws IOException, ServletException {
+                                 FilterChain filterChain) throws IOException, ServletException
+    {
 
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Allow-Headers", "x-requested-with, x-auth-token, token");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        if (!(request.getMethod().equalsIgnoreCase("OPTIONS"))) {
+        if (!(request.getMethod().equalsIgnoreCase("OPTIONS")))
+        {
             filterChain.doFilter(request, response);
-        } else {
+        } else
+        {
             response.setHeader("Access-Control-Allowed-Methods", "POST, GET, DELETE");
             response.setHeader("Access-Control-Max-Age", "3600");
             response.setHeader("Access-Control-Allow-Headers", "authorization, content-type,x-auth-token, " + "access-control-request-headers, access-control-request-method, accept, origin, token, authorization, x-requested-with,Accountcode");
@@ -33,8 +36,10 @@ public class CorsConfiguration implements Filter {
         }
     }
 
+
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException
+    {
         doFilterInternal((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse, filterChain);
     }
 }

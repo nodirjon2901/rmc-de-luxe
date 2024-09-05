@@ -15,9 +15,11 @@ public class PhotoDTO {
 
     String url;
 
-    public PhotoDTO(Photo photo) {
-        this.id = photo.getId();
-        this.url = photo.getHttpUrl();
+    public PhotoDTO(Photo entity)
+    {
+        if (entity == null)
+            return;
+        this.id = entity.getId();
+        this.url = entity.getHttpUrl();
     }
-
 }
