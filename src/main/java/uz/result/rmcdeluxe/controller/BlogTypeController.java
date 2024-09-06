@@ -13,38 +13,39 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.result.rmcdeluxe.documentation.SwaggerConstants;
 import uz.result.rmcdeluxe.payload.ApiResponse;
-import uz.result.rmcdeluxe.payload.houseType.HouseTypeCreateDTO;
-import uz.result.rmcdeluxe.payload.houseType.HouseTypeMapper;
+import uz.result.rmcdeluxe.payload.blog.BlogTypeCreateDTO;
+import uz.result.rmcdeluxe.payload.blog.BlogTypeMapper;
+import uz.result.rmcdeluxe.payload.blog.BlogTypeResponse;
 import uz.result.rmcdeluxe.payload.houseType.HouseTypeResponseDTO;
 
 @RestController
-@RequestMapping("/api/house-type")
+@RequestMapping("/api/blog-type")
 @RequiredArgsConstructor
-@Tag(name = "House Type - Тип жилья")
-public class HouseTypeController {
+@Tag(name = "Blog type - Тип блога")
+public class BlogTypeController {
 
-    @PostMapping(value = "/create",consumes = {"application/json"})
+    @PostMapping(value = "/create", consumes = {"application/json"})
     @Operation(summary = "This API used for create type")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "201",
                     description = "If successfully created you get  status '201'",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = HouseTypeResponseDTO.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = BlogTypeResponse.class))
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
                     description = "If get 400 status Please read response 'message'. DON'T BE MAZGI",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))),
     })
-    public ResponseEntity<ApiResponse<HouseTypeResponseDTO>> create(
+    public ResponseEntity<ApiResponse<BlogTypeResponse>> create(
             @Parameter(
                     name = "createDTO",
                     description = "DTO containing details of type",
                     required = true,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = HouseTypeCreateDTO.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = BlogTypeCreateDTO.class))
             )
-            @RequestBody HouseTypeCreateDTO createDTO
-    ){
+            @RequestBody BlogTypeCreateDTO createDTO
+    ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }
 
@@ -56,14 +57,14 @@ public class HouseTypeController {
                     description = "a) Example schema for all language",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = HouseTypeResponseDTO.class)
+                            schema = @Schema(implementation = BlogTypeResponse.class)
                     )),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200-b",
                     description = "b) Example schema for one language",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = HouseTypeMapper.class)
+                            schema = @Schema(implementation = BlogTypeMapper.class)
                     )),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
@@ -110,7 +111,7 @@ public class HouseTypeController {
     public ResponseEntity<ApiResponse<?>> findById(
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
-    ){
+    ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }
 
@@ -122,14 +123,14 @@ public class HouseTypeController {
                     description = "a) Example schema for all language. List of types",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = HouseTypeResponseDTO.class))
+                            array = @ArraySchema(schema = @Schema(implementation = BlogTypeResponse.class))
                     )),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200-b",
                     description = "b) Example scheme for one language. List of types",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = HouseTypeMapper.class))
+                            array = @ArraySchema(schema = @Schema(implementation = BlogTypeMapper.class))
                     )
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -173,7 +174,7 @@ public class HouseTypeController {
     )
     public ResponseEntity<ApiResponse<?>> findAll(
             @RequestHeader(value = "Accept-Language", required = false) String lang
-    ){
+    ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }
 
@@ -182,10 +183,10 @@ public class HouseTypeController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
-                    description = "'HouseType' after edited",
+                    description = "'BlogType' after edited",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = HouseTypeResponseDTO.class)
+                            schema = @Schema(implementation = BlogTypeResponse.class)
                     )),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
@@ -216,8 +217,8 @@ public class HouseTypeController {
             )
     )
     public ResponseEntity<ApiResponse<HouseTypeResponseDTO>> update(
-            @RequestBody HouseTypeCreateDTO createDTO
-    ){
+            @RequestBody BlogTypeCreateDTO createDTO
+    ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }
 
@@ -245,8 +246,9 @@ public class HouseTypeController {
             required = true)
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
-    ){
+    ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }
+
 
 }

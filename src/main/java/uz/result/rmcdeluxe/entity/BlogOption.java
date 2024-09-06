@@ -1,9 +1,7 @@
 package uz.result.rmcdeluxe.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.OneToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,5 +31,13 @@ public class BlogOption {
 
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     Photo photo;
+
+    @OneToOne
+    @JsonIgnore
+    Blog blog;
+
+    @ManyToOne
+    @JsonIgnore
+    Blog blogs;
 
 }

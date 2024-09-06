@@ -22,11 +22,11 @@ public class CatalogCreateDTO {
 
     Photo photo;
 
-    DistrictCreateDTO district;
+    Long districtId;
 
     Double price;
 
-    HouseTypeCreateDTO type;
+    Long typeId;
 
     Translation numberOfRooms;
 
