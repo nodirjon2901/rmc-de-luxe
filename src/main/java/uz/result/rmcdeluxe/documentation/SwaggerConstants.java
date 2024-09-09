@@ -57,6 +57,14 @@ public interface SwaggerConstants {
             UpdateDTO containing the updated information of the catalog
             \s""";
 
+    String BUILD_UPDATE_DESCRIPTION = """
+            UpdateDTO containing the updated information of the build
+            \s""";
+
+    String INF_AREA_UPDATE_DESCRIPTION = """
+            UpdateDTO containing the updated information of the InfArea
+            \s""";
+
     String DISTRICT_UPDATE_DESCRIPTION = """
             UpdateDTO containing the updated information of the district
             \s""";
@@ -164,10 +172,10 @@ public interface SwaggerConstants {
               "main": true
             }
             """;
-    String ADD_PHOTO_IN_OPTION_DESC= """
+    String ADD_PHOTO_IN_OPTION_DESC = """
              Send 'photo' without 'id' and it added
             """;
-    String ADD_PHOTO_IN_OPTION_JSON= """
+    String ADD_PHOTO_IN_OPTION_JSON = """
             {
               "id": 0,
               "options": [
@@ -358,4 +366,98 @@ public interface SwaggerConstants {
             }
             """;
 
+    String INF_AREA_FULL_FORM = """
+            {
+              "id": 0,
+              "sections": [
+                {
+                  "id": 0,
+                  "title": {
+                    "uz": "string",
+                    "ru": "string",
+                    "en": "string"
+                  },
+                  "description": {
+                    "uz": "string",
+                    "ru": "string",
+                    "en": "string"
+                  },
+                  "sectionItems": [
+                    {
+                      "id": 0,
+                      "name": {
+                        "uz": "string",
+                        "ru": "string",
+                        "en": "string"
+                      },
+                      "timeOrDistance": {
+                        "uz": "string",
+                        "ru": "string",
+                        "en": "string"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "photo": {
+                "id": 0,
+                "url": "string"
+              }
+            }            
+            """;
+
+    String INF_AREA_CUSTOM_FIELD = """
+            {
+              "id": 0,
+              "sections": [
+                {
+                  "id": 0,
+                  "sectionItems": [
+                    {
+                      "id": 0,
+                      "name": {
+                        "uz": "string"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }            
+            """;
+    String BUILD_FULL_FORM = """
+            {
+              "id": 0,
+              "title": {
+                "uz": "string",
+                "ru": "string",
+                "en": "string"
+              },
+              "description": {
+                "uz": "string",
+                "ru": "string",
+                "en": "string"
+              },
+              "gallery": [
+                {
+                  "id": 0,
+                  "url": "string"
+                }
+              ],
+              "videoList": [
+                {
+                  "id": 0,
+                  "videoUrl": "string"
+                }
+              ],
+              "active": true
+            }
+            """;
+    String BUILD_CUSTOM_FIELD = """
+            {
+              "id": 0,
+              "title": {
+                "uz": "string"
+              }
+            }
+            """;
 }

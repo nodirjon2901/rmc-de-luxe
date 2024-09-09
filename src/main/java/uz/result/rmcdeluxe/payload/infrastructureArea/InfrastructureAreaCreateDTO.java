@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import uz.result.rmcdeluxe.entity.InfrastructSectionItem;
-import uz.result.rmcdeluxe.payload.Translation;
+import uz.result.rmcdeluxe.entity.Photo;
 
 import java.util.List;
 
@@ -14,12 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class InfrastructSectionCreateDTO {
+public class InfrastructureAreaCreateDTO {
 
-    Translation title;
+    List<InfrastructSectionCreateDTO> sections;
 
-    Translation description;
-
-    List<InfrastructSectionItemCreateDTO> sectionItems;
+    Photo photo;
 
 }

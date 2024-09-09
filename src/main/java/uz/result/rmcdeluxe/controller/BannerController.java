@@ -112,7 +112,7 @@ public class BannerController {
                     )
             }
     )
-    public ResponseEntity<ApiResponse<BannerResponseDTO>> findBanner(
+    public ResponseEntity<ApiResponse<?>> findBanner(
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
         return ResponseEntity.ok(new ApiResponse<>());
@@ -177,7 +177,7 @@ public class BannerController {
             name = "id",
             description = "ID of the bannerSlider to be retrieved",
             required = true)
-    public ResponseEntity<ApiResponse<BannerSliderMapper>> findBannerSliderById(
+    public ResponseEntity<ApiResponse<?>> findBannerSliderById(
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {

@@ -41,6 +41,10 @@ public class Photo {
     @JsonIgnore
     String type;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    Building building;
+
     public Photo(PhotoDTO dto)
     {
         if (dto == null)

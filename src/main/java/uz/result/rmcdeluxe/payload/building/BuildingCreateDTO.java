@@ -1,11 +1,12 @@
-package uz.result.rmcdeluxe.payload.infrastructureArea;
+package uz.result.rmcdeluxe.payload.building;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import uz.result.rmcdeluxe.entity.InfrastructSectionItem;
+import uz.result.rmcdeluxe.entity.Photo;
+import uz.result.rmcdeluxe.entity.VideoFile;
 import uz.result.rmcdeluxe.payload.Translation;
 
 import java.util.List;
@@ -14,12 +15,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class InfrastructSectionCreateDTO {
+public class BuildingCreateDTO {
 
     Translation title;
 
     Translation description;
 
-    List<InfrastructSectionItemCreateDTO> sectionItems;
+    List<Photo> gallery;
+
+    List<VideoFile> videoList;
+
+    boolean active;
 
 }

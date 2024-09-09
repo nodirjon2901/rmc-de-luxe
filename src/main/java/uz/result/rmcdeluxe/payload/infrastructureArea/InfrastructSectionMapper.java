@@ -6,7 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import uz.result.rmcdeluxe.entity.InfrastructSection;
+import uz.result.rmcdeluxe.entity.InfrastructSectionItem;
 import uz.result.rmcdeluxe.exception.LanguageNotSupported;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +23,8 @@ public class InfrastructSectionMapper {
     String title;
 
     String description;
+
+    List<InfrastructSectionItemMapper> sectionItems;
 
     public InfrastructSectionMapper(InfrastructSection section, String lang) {
         this.id = section.getId();
@@ -41,6 +47,9 @@ public class InfrastructSectionMapper {
             default:
                 throw new LanguageNotSupported("Language not supported: " + lang);
         }
+        this.sectionItems = section.getSectionItems().stream()
+                .map(item -> new InfrastructSectionItemMapper(item, lang))
+                .collect(Collectors.toList());
     }
 
 }
