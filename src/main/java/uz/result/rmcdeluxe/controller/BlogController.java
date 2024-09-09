@@ -308,13 +308,22 @@ public class BlogController {
             required = false,
             schema = @Schema(type = "integer")
     )
+    @Parameter(
+            name = "page",
+            description = "Page number to retrieve. Default is 1. Number of blogs to be retrieved per page default is 10",
+            required = false,
+            schema = @Schema(type = "integer", defaultValue = "1")
+    )
     public ResponseEntity<ApiResponse<?>> findAllWithOptionalFilters(
             @RequestParam(value = "main", required = false) boolean main,
             @RequestParam(value = "popular", required = false) boolean popular,
             @RequestParam(value = "new", required = false) boolean aNew,
             @RequestParam(value = "old", required = false) boolean old,
             @RequestParam(value = "typeID", required = false) Long typeId,
-            @RequestHeader(value = "Accept-Language", required = false) String lang
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestHeader(value = "Accept-Language", required = false) String lang,
+            @Parameter(hidden = true)
+            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
     ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }
@@ -361,6 +370,11 @@ public class BlogController {
                                     value = SwaggerConstants.ADD_BLOG_OPTION_JSON
                             ),
                             @ExampleObject(
+                                    name = "Add photo in BlogOption",
+                                    description = SwaggerConstants.ADD_PHOTO_IN_OPTION_DESC,
+                                    value = SwaggerConstants.ADD_PHOTO_IN_OPTION_JSON
+                            ),
+                            @ExampleObject(
                                     name = "Delete BlogOption",
                                     description = SwaggerConstants.DELETE_BLOG_OPTION_DESC,
                                     value = SwaggerConstants.DELETE_BLOG_OPTION_JSON
@@ -370,7 +384,7 @@ public class BlogController {
     )
     public ResponseEntity<ApiResponse<BlogResponseDTO>> update(
             @RequestBody BlogUpdateDTO updateDTO
-            ){
+    ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }
 
