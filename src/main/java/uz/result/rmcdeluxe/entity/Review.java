@@ -1,20 +1,22 @@
 package uz.result.rmcdeluxe.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.util.List;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Building {
+public class Review {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -31,16 +33,10 @@ public class Building {
 
     String descriptionEn;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "building", orphanRemoval = true)
-    List<Photo> gallery;
-
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "building", orphanRemoval = true)
-    List<VideoFile> videoList;
+    @CreationTimestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    Date createdDate;
 
     boolean active;
-
-    @ManyToOne
-    @JsonIgnore
-    Catalog catalog;
 
 }

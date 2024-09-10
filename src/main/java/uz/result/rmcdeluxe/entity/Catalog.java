@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -47,5 +49,9 @@ public class Catalog {
     String completionDateEn;
 
     boolean active;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "catalog", orphanRemoval = true)
+    @JsonIgnore
+    List<Building> buildingList;
 
 }

@@ -6,9 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import uz.result.rmcdeluxe.entity.Building;
+import uz.result.rmcdeluxe.entity.Catalog;
 import uz.result.rmcdeluxe.entity.Photo;
 import uz.result.rmcdeluxe.entity.VideoFile;
 import uz.result.rmcdeluxe.exception.LanguageNotSupported;
+import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
 
 import java.util.List;
 
@@ -29,6 +31,8 @@ public class BuildingMapper {
     List<VideoFile> videoList;
 
     boolean active;
+
+    CatalogMapper catalog;
 
     public BuildingMapper(Building build, String lang){
         this.id= build.getId();
@@ -57,6 +61,7 @@ public class BuildingMapper {
             default:
                 throw new LanguageNotSupported("Language not supported: "+lang);
         }
+        this.catalog=new CatalogMapper(build.getCatalog(),lang);
     }
 
 }

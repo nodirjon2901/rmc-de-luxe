@@ -57,8 +57,19 @@ public interface SwaggerConstants {
             UpdateDTO containing the updated information of the catalog
             \s""";
 
+    String ABOUT_US_BANNER_UPDATE_DESCRIPTION = """
+            UpdateDTO containing the updated information of the about us banner
+            \s""";
+
+    String ABOUT_US_BODY_UPDATE_DESCRIPTION = """
+            UpdateDTO containing the updated information of the about us body
+            \s""";
+
     String BUILD_UPDATE_DESCRIPTION = """
-            UpdateDTO containing the updated information of the build
+            1) If you want to add a new video or picture to the building during the update process. 
+            First save and then send only the url of this image or video in json format.
+                                                                     
+            2) If you want to delete a picture or video from the building. You use the delete API released for Video/Image
             \s""";
 
     String INF_AREA_UPDATE_DESCRIPTION = """
@@ -67,6 +78,10 @@ public interface SwaggerConstants {
 
     String DISTRICT_UPDATE_DESCRIPTION = """
             UpdateDTO containing the updated information of the district
+            \s""";
+
+    String REVIEW_UPDATE_DESCRIPTION = """
+            UpdateDTO containing the updated information of the review
             \s""";
 
     String HOUSE_TYPE_UPDATE_DESCRIPTION = """
@@ -453,6 +468,123 @@ public interface SwaggerConstants {
             }
             """;
     String BUILD_CUSTOM_FIELD = """
+            {
+              "id": 0,
+              "title": {
+                "uz": "string"
+              }
+            }
+            """;
+
+    String ADD_PHOTO_OR_VIDEO_IN_BUILDING = """
+            {
+              "id": 0,
+              "title": {
+                "uz": "string",
+                "ru": "string",
+                "en": "string"
+              },
+              "description": {
+                "uz": "string",
+                "ru": "string",
+                "en": "string"
+              },
+              "gallery": [
+                {
+                  "url": "photo_url_1"
+                },
+                {
+                  "url": "photo_url_2"
+                }
+              ],
+              "videoList": [
+                {
+                  "videoUrl": "video_url_1"
+                },
+                {
+                  "videoUrl": "video_url_2"
+                }
+              ],
+              "active": true
+            }
+            """;
+    String REVIEW_FULL_FORM = """
+            {
+              "id": 0,
+              "title": {
+                "uz": "string",
+                "ru": "string",
+                "en": "string"
+              },
+              "description": {
+                "uz": "string",
+                "ru": "string",
+                "en": "string"
+              },
+              "active": true
+            }           \s
+            """;
+
+    String REVIEW_CUSTOM_FIELD = """
+            {
+              "id": 0,
+              "title": {
+                "uz": "string"
+              }
+            }           \s
+            """;
+    String ABOUT_US_BANNER_FULL_FORM = """
+            {
+               "id": 0,
+               "title": {
+                 "uz": "string",
+                 "ru": "string",
+                 "en": "string"
+               },
+               "shortDescription": {
+                 "uz": "string",
+                 "ru": "string",
+                 "en": "string"
+               },
+               "photo": {
+                 "id": 0,
+                 "url": "string"
+               }
+             }
+            """;
+    String ABOUT_US_BANNER_CUSTOM_FIELD = """
+            {
+               "id": 0,
+               "title": {
+                 "uz": "string"
+               }
+             }
+            """;
+    String ABOUT_US_BODY_FULL_FORM = """
+            {
+              "id": 0,
+              "title": {
+                "uz": "string",
+                "ru": "string",
+                "en": "string"
+              },
+              "subtitle": {
+                "uz": "string",
+                "ru": "string",
+                "en": "string"
+              },
+              "description": {
+                "uz": "string",
+                "ru": "string",
+                "en": "string"
+              },
+              "photo": {
+                "id": 0,
+                "url": "string"
+              }
+            }
+            """;
+    String ABOUT_US_BODY_CUSTOM_FIELD = """
             {
               "id": 0,
               "title": {

@@ -11,82 +11,60 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import uz.result.rmcdeluxe.documentation.SwaggerConstants;
 import uz.result.rmcdeluxe.payload.ApiResponse;
-import uz.result.rmcdeluxe.payload.building.BuildingMapper;
-import uz.result.rmcdeluxe.payload.building.BuildingResponseDTO;
-import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
-import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
-
-import java.util.List;
+import uz.result.rmcdeluxe.payload.review.ReviewCreateDTO;
+import uz.result.rmcdeluxe.payload.review.ReviewMapper;
+import uz.result.rmcdeluxe.payload.review.ReviewResponseDTO;
+import uz.result.rmcdeluxe.payload.review.ReviewUpdateDTO;
 
 @RestController
-@RequestMapping("/api/build")
+@RequestMapping("/api/review")
 @RequiredArgsConstructor
-@Tag(name = "Building Page")
-public class BuildingController {
+@Tag(name = "Review - Отзывы")
+public class ReviewController {
 
-    @PostMapping(value = "/create", consumes = "multipart/form-data")
-    @Operation(summary = "This API is used to create a new building entry with its gallery and videos.")
+    @PostMapping(value = "/create", consumes = {"application/json"})
+    @Operation(summary = "This API used for create review")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "201",
-                    description = "If successfully created, you get status '201'.",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = BuildingResponseDTO.class))
+                    description = "If successfully created you get  status '201'",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReviewResponseDTO.class))
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
-                    description = "If you get a 400 status, please read the response 'message'. DON'T BE MAZGI.",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))
-            ),
+                    description = "If get 400 status Please read response 'message'. DON'T BE MAZGI",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))),
     })
-    public ResponseEntity<ApiResponse<BuildingResponseDTO>> create(
+    public ResponseEntity<ApiResponse<ReviewResponseDTO>> create(
             @Parameter(
-                    name = "json",
-                    description = "Building details in JSON format. This field contains all the text information needed to create a building.",
+                    name = "createDTO",
+                    description = "DTO containing details of review",
                     required = true,
-                    schema = @Schema(type = "string", format = "json")
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReviewCreateDTO.class))
             )
-            @RequestPart(value = "json") String json,
-            @Parameter(
-                    name = "gallery",
-                    description = "A list of image files to be uploaded as the building's gallery. Accepted formats: .jpg, .png, .svg.",
-                    required = false,
-                    content = @Content(mediaType = "multipart/form-data",
-                            array = @ArraySchema(schema = @Schema(type = "string", format = "binary")))
-            )
-            @RequestPart(value = "gallery", required = false) List<MultipartFile> gallery,
-            @Parameter(
-                    name = "video_list",
-                    description = "A list of video files to be uploaded for the building. Accepted formats: .mp4 ",
-                    required = false,
-                    content = @Content(mediaType = "multipart/form-data",
-                            array = @ArraySchema(schema = @Schema(type = "string", format = "binary")))
-            )
-            @RequestPart(value = "video_list", required = false) List<MultipartFile> videoList
+            @RequestBody ReviewCreateDTO createDTO
     ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }
 
-
-
     @GetMapping("/get/{id}")
-    @Operation(summary = "This API used to retrieve a build by its ID")
+    @Operation(summary = "This API used to retrieve a review by its ID")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200-a",
                     description = "a) Example schema for all language",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = BuildingResponseDTO.class)
+                            schema = @Schema(implementation = ReviewResponseDTO.class)
                     )),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200-b",
                     description = "b) Example schema for one language",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = BuildingMapper.class)
+                            schema = @Schema(implementation = ReviewMapper.class)
                     )),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
@@ -128,7 +106,7 @@ public class BuildingController {
     )
     @Parameter(
             name = "id",
-            description = "ID of the build to be retrieved",
+            description = "ID of the review to be retrieved",
             required = true)
     public ResponseEntity<ApiResponse<?>> findById(
             @PathVariable Long id,
@@ -138,21 +116,21 @@ public class BuildingController {
     }
 
     @GetMapping("/get-all")
-    @Operation(summary = "This API is used to retrieve all builds")
+    @Operation(summary = "This API used to retrieve all reviews")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200-a",
-                    description = "a) Example schema for all languages. List of builds",
+                    description = "a) Example schema for all language. List of reviews",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = BuildingResponseDTO.class))
+                            array = @ArraySchema(schema = @Schema(implementation = ReviewResponseDTO.class))
                     )),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200-b",
-                    description = "b) Example schema for one language. List of builds",
+                    description = "b) Example scheme for one language. List of reviews",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = BuildingMapper.class))
+                            array = @ArraySchema(schema = @Schema(implementation = ReviewMapper.class))
                     )
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -166,28 +144,29 @@ public class BuildingController {
     @Parameter(
             name = "Accept-Language",
             description = "Select language code one of : 'uz','ru','en'",
+            required = true,
             examples = {
                     @ExampleObject(
                             name = "uz",
-                            description = "Data in uzbek",
+                            description = "List of review in uzbek",
                             summary = "uz",
                             value = "uz"
                     ),
                     @ExampleObject(
                             name = "ru",
-                            description = "Data in russian",
+                            description = "List of review in russian",
                             summary = "ru",
                             value = "ru"
                     ),
                     @ExampleObject(
                             name = "en",
-                            description = "Data in english",
+                            description = "List of review in english",
                             summary = "en",
                             value = "en"
                     ),
                     @ExampleObject(
                             name = "-",
-                            description = "Data in all languages",
+                            description = "Data in all language",
                             summary = "-",
                             value = "-"
                     )
@@ -200,14 +179,14 @@ public class BuildingController {
     }
 
     @PutMapping("/update")
-    @Operation(summary = "This API used to update an existing build")
+    @Operation(summary = "This API used to update an existing review")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
-                    description = "'Build' after edited",
+                    description = "'Review' after edited",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = BuildingResponseDTO.class)
+                            schema = @Schema(implementation = ReviewResponseDTO.class)
                     )),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
@@ -219,38 +198,32 @@ public class BuildingController {
     })
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             required = true,
-            description = SwaggerConstants.BUILD_UPDATE_DESCRIPTION,
+            description = SwaggerConstants.REVIEW_UPDATE_DESCRIPTION,
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = BuildingResponseDTO.class),
+                    schema = @Schema(implementation = ReviewUpdateDTO.class),
                     examples = {
                             @ExampleObject(
                                     name = "Edit All fields",
                                     description = "Edit All fields at the same time",
-                                    value = SwaggerConstants.BUILD_FULL_FORM
+                                    value = SwaggerConstants.REVIEW_FULL_FORM
                             ),
                             @ExampleObject(
                                     name = "Edit custom field",
                                     description = "Send field which you want",
-                                    value = SwaggerConstants.BUILD_CUSTOM_FIELD
-                            ),
-                            @ExampleObject(
-                                    name = "Add photo/video",
-                                    description = "Send 'photo/video' without 'id' and it added",
-                                    value = SwaggerConstants.ADD_PHOTO_OR_VIDEO_IN_BUILDING
-                            ),
-
+                                    value = SwaggerConstants.REVIEW_CUSTOM_FIELD
+                            )
                     }
             )
     )
-    public ResponseEntity<ApiResponse<BuildingResponseDTO>> update(
-            @RequestBody BuildingResponseDTO updateDTO
+    public ResponseEntity<ApiResponse<ReviewResponseDTO>> update(
+            @RequestBody ReviewUpdateDTO updateDTO
     ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }
 
     @DeleteMapping("/delete/{id}")
-    @Operation(summary = "This API used to delete a build by its ID")
+    @Operation(summary = "This API used to delete a review by its ID")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
@@ -269,13 +242,12 @@ public class BuildingController {
     })
     @Parameter(
             name = "id",
-            description = "ID of the catalog to be deleted",
+            description = "ID of the review to be deleted",
             required = true)
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
     ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }
-
 
 }

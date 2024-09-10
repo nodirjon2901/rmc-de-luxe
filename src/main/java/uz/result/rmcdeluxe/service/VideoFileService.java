@@ -1,6 +1,8 @@
 package uz.result.rmcdeluxe.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -12,8 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import uz.result.rmcdeluxe.entity.Photo;
 import uz.result.rmcdeluxe.entity.VideoFile;
+import uz.result.rmcdeluxe.exception.IllegalPhotoTypeException;
+import uz.result.rmcdeluxe.exception.NotFoundException;
 import uz.result.rmcdeluxe.payload.ApiResponse;
+import uz.result.rmcdeluxe.payload.VideoDTO;
 import uz.result.rmcdeluxe.repository.VideoFileRepository;
 
 import java.io.File;
@@ -37,6 +43,8 @@ public class VideoFileService {
 
     private final VideoFileRepository videoFileRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(VideoFileService.class);
+
     private final ResourceLoader resourceLoader;
 
     public ResponseEntity<ApiResponse<VideoFile>> save(MultipartFile video) {
@@ -59,12 +67,13 @@ public class VideoFileService {
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-
-            Files.copy(video.getInputStream(), targetLocation);
-            VideoFile videoFile = VideoFile
-                    .builder()
-                    .videoUrl(baseUrl + "/video/" + fileName)
-                    .build();
+            VideoFile videoFile = videoFileRepository.save(new VideoFile());//--
+            saveToFile(video, videoFile);//--
+//            Files.copy(video.getInputStream(), targetLocation);
+//            VideoFile videoFile = VideoFile
+//                    .builder()
+//                    .videoUrl(baseUrl + "/video/" + fileName)
+//                    .build();
             response.setData(videoFileRepository.save(videoFile));
             response.setMessage("Video successfully saved!");
             return ResponseEntity.ok(response);
@@ -73,6 +82,18 @@ public class VideoFileService {
             response.setMessage("Could not upload the file: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void saveToFile(MultipartFile file, VideoFile video) throws IOException {
+        String originalFileName = video.getId() + "-" + Objects.requireNonNull(file.getOriginalFilename()).replaceAll(" ", "%20");
+
+        Path filePath = Paths.get(uploadPath + File.separator + originalFileName);
+
+        file.transferTo(filePath);
+
+        video.setName(originalFileName);
+        video.setFilepath(filePath.toFile().getAbsolutePath());
+        video.setVideoUrl(baseUrl + "/video/" + video.getName());
     }
 
     public ResponseEntity<Resource> getVideoByName(HttpHeaders headers, String fileName) throws IOException {
@@ -110,6 +131,69 @@ public class VideoFileService {
                 .body(new ByteArrayResource(data));
     }
 
+    public ResponseEntity<ApiResponse<VideoDTO>> update(Long id, MultipartFile videoFile) {
+        ApiResponse<VideoDTO> response = new ApiResponse<>();
+        VideoFile fromDB = videoFileRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Video not found by id: " + id));
 
+        if (videoFile.getContentType() != null && !(videoFile.getContentType().equals("video/mp4"))) {
+            throw new IllegalPhotoTypeException("Unsupported video type: " + videoFile.getContentType() + ", Support only video/mp4");
+        }
+
+        try {
+            if (fromDB.getFilepath() != null && !fromDB.getFilepath().isEmpty()) {
+                deleteFromFile(fromDB.getFilepath());
+            }
+            saveToFile(videoFile, fromDB);
+
+            response.setMessage("Updated");
+            response.setData(new VideoDTO(videoFileRepository.save(fromDB)));
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteFromFile(String filePath) throws IOException {
+        try {
+            Files.delete(Paths.get(filePath));
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            throw new IOException(e);
+        }
+    }
+
+//    public ResponseEntity<ApiResponse<Photo>> upload(MultipartFile photo)
+//    {
+//        if (photo == null || photo.isEmpty())
+//            throw new NotFoundException("Photo is null or empty");
+//        ApiResponse<Photo> response = new ApiResponse<>();
+//
+//        response.setMessage("Uploaded");
+//        response.setData(save(photo));
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
+
+    public ResponseEntity<ApiResponse<?>> delete(Long id) {
+        ApiResponse<?> response=new ApiResponse<>();
+        VideoFile video = videoFileRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Video not found by id: " + id));
+        try {
+            videoFileRepository.deleteByCustom(video.getId());
+        }catch (Exception e){
+            VideoFile video1=new VideoFile();
+            video1.setId(id);
+            videoFileRepository.save(video1);
+        }
+
+        try {
+            deleteFromFile(video.getFilepath());
+        }catch (IOException e){
+            logger.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        response.setMessage("Deleted");
+        return ResponseEntity.ok(response);
+    }
 
 }

@@ -9,6 +9,7 @@ import uz.result.rmcdeluxe.entity.Building;
 import uz.result.rmcdeluxe.entity.Photo;
 import uz.result.rmcdeluxe.entity.VideoFile;
 import uz.result.rmcdeluxe.payload.Translation;
+import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
 
 import java.util.List;
 
@@ -30,11 +31,14 @@ public class BuildingResponseDTO {
 
     boolean active;
 
+    CatalogResponseDTO catalog;
+
     public BuildingResponseDTO(Building build) {
         this.id = build.getId();
         this.gallery = build.getGallery();
         this.videoList = build.getVideoList();
         this.active = build.isActive();
+        this.catalog = new CatalogResponseDTO(build.getCatalog());
         this.title = new Translation(
                 build.getTitleUz(),
                 build.getTitleRu(),
