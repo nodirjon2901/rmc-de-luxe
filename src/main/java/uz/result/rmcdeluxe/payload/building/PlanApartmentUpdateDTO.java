@@ -12,7 +12,9 @@ import uz.result.rmcdeluxe.payload.Translation;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PlanApartmentCreateDTO {
+public class PlanApartmentUpdateDTO {
+
+    Long id;
 
     Long buildingId;
 
@@ -29,5 +31,7 @@ public class PlanApartmentCreateDTO {
     Double price;
 
     Photo photo;
+
+    boolean active;
 
 }

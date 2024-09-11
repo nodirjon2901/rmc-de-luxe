@@ -17,6 +17,7 @@ import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.building.PlanApartmentCreateDTO;
 import uz.result.rmcdeluxe.payload.building.PlanApartmentMapper;
 import uz.result.rmcdeluxe.payload.building.PlanApartmentResponseDTO;
+import uz.result.rmcdeluxe.payload.building.PlanApartmentUpdateDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogUpdateDTO;
 
@@ -238,7 +239,7 @@ public class PlanApartmentController {
             description = SwaggerConstants.APARTMENT_UPDATE_DESCRIPTION,
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = PlanApartmentResponseDTO.class),
+                    schema = @Schema(implementation = PlanApartmentUpdateDTO.class),
                     examples = {
                             @ExampleObject(
                                     name = "Edit All fields",
@@ -253,8 +254,8 @@ public class PlanApartmentController {
                     }
             )
     )
-    public ResponseEntity<ApiResponse<CatalogResponseDTO>> update(
-            @RequestBody CatalogUpdateDTO updateDTO
+    public ResponseEntity<ApiResponse<PlanApartmentResponseDTO>> update(
+            @RequestBody PlanApartmentUpdateDTO updateDTO
     ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }

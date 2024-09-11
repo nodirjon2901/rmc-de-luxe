@@ -33,6 +33,8 @@ public class PlanApartmentResponseDTO {
 
     boolean active;
 
+    BuildingSubClassDTO building;
+
     public PlanApartmentResponseDTO(PlanApartment planApartment) {
         this.id = planApartment.getId();
         this.floorNum = planApartment.getFloorNum();
@@ -41,6 +43,7 @@ public class PlanApartmentResponseDTO {
         this.price = planApartment.getPrice();
         this.photo = planApartment.getPhoto();
         this.active = planApartment.isActive();
+        this.building = new BuildingSubClassDTO(planApartment.getBuilding());
         this.title = new Translation(
                 planApartment.getTitleUz(),
                 planApartment.getTitleRu(),

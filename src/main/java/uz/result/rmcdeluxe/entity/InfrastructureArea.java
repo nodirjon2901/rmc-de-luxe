@@ -1,5 +1,6 @@
 package uz.result.rmcdeluxe.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,5 +24,9 @@ public class InfrastructureArea {
 
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     Photo photo;
+
+    @ManyToOne
+    @JsonIgnore
+    Building building;
 
 }

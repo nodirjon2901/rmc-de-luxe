@@ -33,6 +33,8 @@ public class PlanApartmentMapper {
 
     boolean active;
 
+    BuildingSubClassDTO building;
+
     public PlanApartmentMapper(PlanApartment planApartment, String lang) {
         this.id = planApartment.getId();
         this.floorNum = planApartment.getFloorNum();
@@ -41,6 +43,7 @@ public class PlanApartmentMapper {
         this.price = planApartment.getPrice();
         this.photo = planApartment.getPhoto();
         this.active = planApartment.isActive();
+        this.building=new BuildingSubClassDTO(planApartment.getBuilding());
         switch (lang.toLowerCase()) {
             case "uz": {
                 this.title = planApartment.getTitleUz();

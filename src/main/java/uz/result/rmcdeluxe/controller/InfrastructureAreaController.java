@@ -16,8 +16,10 @@ import uz.result.rmcdeluxe.documentation.SwaggerConstants;
 import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
 import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
+import uz.result.rmcdeluxe.payload.infrastructureArea.InfrastructureAreaCreateDTO;
 import uz.result.rmcdeluxe.payload.infrastructureArea.InfrastructureAreaMapper;
 import uz.result.rmcdeluxe.payload.infrastructureArea.InfrastructureAreaResponseDTO;
+import uz.result.rmcdeluxe.payload.infrastructureArea.InfrastructureAreaUpdateDTO;
 
 @RestController
 @RequestMapping("/api/infrastructure-area")
@@ -43,7 +45,7 @@ public class InfrastructureAreaController {
                     name = "json",
                     description = "InfArea details in JSON format (excluding photo). Insert text data as JSON format",
                     required = true,
-                    schema = @Schema(implementation = InfrastructureAreaResponseDTO.class, format = "json", type = "string")
+                    schema = @Schema(implementation = InfrastructureAreaCreateDTO.class, format = "json", type = "string")
             )
             @RequestPart(value = "json") String json,
             @Parameter(
@@ -208,7 +210,7 @@ public class InfrastructureAreaController {
             description = SwaggerConstants.INF_AREA_UPDATE_DESCRIPTION,
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = InfrastructureAreaResponseDTO.class),
+                    schema = @Schema(implementation = InfrastructureAreaUpdateDTO.class),
                     examples = {
                             @ExampleObject(
                                     name = "Edit All fields",
@@ -224,7 +226,7 @@ public class InfrastructureAreaController {
             )
     )
     public ResponseEntity<ApiResponse<InfrastructureAreaResponseDTO>> update(
-            @RequestBody InfrastructureAreaResponseDTO updateDTO
+            @RequestBody InfrastructureAreaUpdateDTO updateDTO
     ) {
         return ResponseEntity.ok(new ApiResponse<>());
     }

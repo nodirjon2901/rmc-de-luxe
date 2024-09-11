@@ -19,6 +19,8 @@ public class Building {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    String slug;//unique
+
     String titleUz;
 
     String titleRu;
@@ -42,5 +44,13 @@ public class Building {
     @ManyToOne
     @JsonIgnore
     Catalog catalog;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "building", orphanRemoval = true)
+    @JsonIgnore
+    List<PlanApartment> apartments;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "building", orphanRemoval = true)
+    @JsonIgnore
+    List<InfrastructureArea> areaList;
 
 }

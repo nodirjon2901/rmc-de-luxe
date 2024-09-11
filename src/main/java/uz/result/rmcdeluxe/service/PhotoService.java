@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import uz.result.rmcdeluxe.entity.Photo;
 import uz.result.rmcdeluxe.exception.IllegalPhotoTypeException;
 import uz.result.rmcdeluxe.exception.NotFoundException;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -38,48 +40,38 @@ public class PhotoService {
 
     private static final Logger logger = LoggerFactory.getLogger(PhotoService.class);
 
-    public Photo save(MultipartFile file)
-    {
+    public Photo save(MultipartFile file) {
         if (file.getContentType() != null && !(file.getContentType().equals("image/png") ||
                 file.getContentType().equals("image/svg+xml") ||
-                file.getContentType().equals("image/jpeg")))
-        {
+                file.getContentType().equals("image/jpeg"))) {
             throw new IllegalPhotoTypeException("Unsupported image type: " + file.getContentType());
         }
 
-        try
-        {
+        try {
             Photo photo = photoRepo.save(new Photo());
             saveToFile(file, photo);
 
             return photoRepo.save(photo);
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public ResponseEntity<byte[]> findByName(String name)
-    {
-        try
-        {
+    public ResponseEntity<byte[]> findByName(String name) {
+        try {
             Photo photo = photoRepo.findByName(name).orElseThrow(() -> new NotFoundException("Photo not found: " + name));
 
             Path imagePath = Paths.get(photo.getFilepath());
             byte[] imageBytes = Files.readAllBytes(imagePath);
 
-            switch (photo.getType())
-            {
-                case "image/png" ->
-                {
+            switch (photo.getType()) {
+                case "image/png" -> {
                     return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageBytes);
                 }
-                case "image/jpeg" ->
-                {
+                case "image/jpeg" -> {
                     return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
                 }
-                case "image/svg+xml" ->
-                {
+                case "image/svg+xml" -> {
                     HttpHeaders headers = new HttpHeaders();
                     headers.add(HttpHeaders.CONTENT_TYPE, "image/svg+xml");
 
@@ -87,28 +79,24 @@ public class PhotoService {
                 }
             }
 
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             logger.error(e.getMessage());
             throw new NotFoundException(e.getMessage());
         }
         return null;
     }
 
-    public ResponseEntity<ApiResponse<PhotoDTO>> update(Long id, MultipartFile file)
-    {
+    public ResponseEntity<ApiResponse<PhotoDTO>> update(Long id, MultipartFile file) {
         ApiResponse<PhotoDTO> response = new ApiResponse<>();
         Photo fromDb = photoRepo.findById(id).orElseThrow(() -> new NotFoundException("Photo not found by id: " + id));
 
         if (file.getContentType() != null && !(file.getContentType().equals("image/png") ||
                 file.getContentType().equals("image/svg+xml") ||
-                file.getContentType().equals("image/jpeg")))
-        {
+                file.getContentType().equals("image/jpeg"))) {
             throw new IllegalPhotoTypeException("Unsupported image type: " + file.getContentType() + " , Support only image/png or image/svg+xml or image/jpeg");
         }
 
-        try
-        {
+        try {
             if (fromDb.getFilepath() != null && !fromDb.getFilepath().isEmpty())
                 deleteFromFile(fromDb.getFilepath());
 
@@ -117,15 +105,13 @@ public class PhotoService {
             response.setMessage("Updated");
             response.setData(new PhotoDTO(photoRepo.save(fromDb)));
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    private void saveToFile(MultipartFile file, Photo photo) throws IOException
-    {
+    private void saveToFile(MultipartFile file, Photo photo) throws IOException {
         String originalFileName = photo.getId() + "-" + Objects.requireNonNull(file.getOriginalFilename()).replaceAll(" ", "%20");
 
         Path filePath = Paths.get(photoUploadPath + File.separator + originalFileName);
@@ -138,21 +124,17 @@ public class PhotoService {
         photo.setHttpUrl(baseUrl + "/photo/" + photo.getName());
     }
 
-    public void deleteFromFile(String filePath) throws IOException
-    {
-        try
-        {
+    public void deleteFromFile(String filePath) throws IOException {
+        try {
             Files.delete(Paths.get(filePath));
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             logger.error(e.getMessage());
             throw new IOException(e);
         }
     }
 
 
-    public ResponseEntity<ApiResponse<Photo>> upload(MultipartFile photo)
-    {
+    public ResponseEntity<ApiResponse<Photo>> upload(MultipartFile photo) {
         if (photo == null || photo.isEmpty())
             throw new NotFoundException("Photo is null or empty");
         ApiResponse<Photo> response = new ApiResponse<>();
@@ -162,32 +144,28 @@ public class PhotoService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<ApiResponse<?>> delete(Long id)
-    {
+    public ResponseEntity<ApiResponse<?>> delete(Long id) {
         ApiResponse<?> response = new ApiResponse<>();
         Photo photo = photoRepo.findById(id).orElseThrow(() -> new NotFoundException("Photo not found by id: " + id));
 
-        try
-        {
+        try {
             photoRepo.delete(photo.getId());
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             Photo photo1 = new Photo();
             photo1.setId(id);
             photoRepo.save(photo1);
         }
 
 
-        try
-        {
+        try {
             deleteFromFile(photo.getFilepath());
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
         response.setMessage("Deleted");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 }

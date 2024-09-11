@@ -17,6 +17,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BuildingCreateDTO {
 
+    Long catalogId;
+
     Translation title;
 
     Translation description;
@@ -26,7 +28,5 @@ public class BuildingCreateDTO {
     List<VideoFile> videoList;
 
     boolean active;
-
-    Long catalogId;
 
 }

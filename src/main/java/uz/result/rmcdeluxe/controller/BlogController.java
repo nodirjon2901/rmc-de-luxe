@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import uz.result.rmcdeluxe.documentation.SwaggerConstants;
 import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.blog.*;
@@ -45,13 +46,20 @@ public class BlogController {
 //                    schema = @Schema(implementation = BlogCreateDTO.class, format = "json", type = "string")
 //            )
 //            @RequestPart(value = "json") String json,
-//            MultipartHttpServletRequest request
+//            @Parameter(
+//                    name = "request",
+//                    description = "Multipart request containing photos for the blog. The photos are attached with keywords to associate them with specific blog options. Some blog options may contain images, others may not.",
+//                    required = true,
+//                    schema = @Schema(type = "file")
+//            )
+//            @RequestPart(value = "files") List<MultipartFile> files,
+//            @RequestPart(value = "keys") List<String> keys
 //    ) {
 //        return ResponseEntity.ok(new ApiResponse<>());
 //    }
 
     @PostMapping(value = "/create", consumes = {"multipart/form-data"})
-    @Operation(summary = "This API is used for creating a blog with optional images")
+    @Operation(summary = "THIS API IS NOT FINISHED YET")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "201",

@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import uz.result.rmcdeluxe.documentation.SwaggerConstants;
 import uz.result.rmcdeluxe.payload.ApiResponse;
+import uz.result.rmcdeluxe.payload.blog.BlogTypeCreateDTO;
+import uz.result.rmcdeluxe.payload.building.BuildingCreateDTO;
 import uz.result.rmcdeluxe.payload.building.BuildingMapper;
 import uz.result.rmcdeluxe.payload.building.BuildingResponseDTO;
+import uz.result.rmcdeluxe.payload.catalog.CatalogCreateDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
 import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
 
@@ -46,7 +49,7 @@ public class BuildingController {
                     name = "json",
                     description = "Building details in JSON format. This field contains all the text information needed to create a building.",
                     required = true,
-                    schema = @Schema(type = "string", format = "json")
+                    schema = @Schema(implementation = BuildingCreateDTO.class, format = "json", type = "string")
             )
             @RequestPart(value = "json") String json,
             @Parameter(

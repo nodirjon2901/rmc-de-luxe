@@ -11,6 +11,7 @@ import uz.result.rmcdeluxe.entity.Photo;
 import uz.result.rmcdeluxe.entity.VideoFile;
 import uz.result.rmcdeluxe.exception.LanguageNotSupported;
 import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
+import uz.result.rmcdeluxe.payload.catalog.CatalogSubClassDTO;
 
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class BuildingMapper {
 
     Long id;
 
+    String slug;
+
     String title;
 
     String description;
@@ -32,36 +35,37 @@ public class BuildingMapper {
 
     boolean active;
 
-    CatalogMapper catalog;
+    CatalogSubClassDTO catalog;
 
-    public BuildingMapper(Building build, String lang){
-        this.id= build.getId();
-        this.gallery=build.getGallery();
-        this.videoList=build.getVideoList();
-        this.active= build.isActive();
-        switch (lang.toLowerCase()){
+    public BuildingMapper(Building build, String lang) {
+        this.id = build.getId();
+        this.slug = build.getSlug();
+        this.gallery = build.getGallery();
+        this.videoList = build.getVideoList();
+        this.active = build.isActive();
+        this.catalog = new CatalogSubClassDTO(build.getCatalog());
+        switch (lang.toLowerCase()) {
 
-            case "uz":{
-                this.title= build.getTitleUz();
-                this.description= build.getDescriptionUz();
+            case "uz": {
+                this.title = build.getTitleUz();
+                this.description = build.getDescriptionUz();
                 break;
             }
 
-            case "ru":{
-                this.title= build.getTitleRu();
-                this.description= build.getDescriptionRu();
+            case "ru": {
+                this.title = build.getTitleRu();
+                this.description = build.getDescriptionRu();
                 break;
             }
 
-            case "en":{
-                this.title= build.getTitleEn();
-                this.description= build.getDescriptionEn();
+            case "en": {
+                this.title = build.getTitleEn();
+                this.description = build.getDescriptionEn();
                 break;
             }
             default:
-                throw new LanguageNotSupported("Language not supported: "+lang);
+                throw new LanguageNotSupported("Language not supported: " + lang);
         }
-        this.catalog=new CatalogMapper(build.getCatalog(),lang);
     }
 
 }

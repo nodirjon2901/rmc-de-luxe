@@ -19,4 +19,6 @@ public class InfrastructureAreaCreateDTO {
 
     Photo photo;
 
+    Long buildingId;
+
 }

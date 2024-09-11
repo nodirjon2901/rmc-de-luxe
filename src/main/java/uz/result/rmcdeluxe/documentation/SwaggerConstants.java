@@ -259,26 +259,27 @@ public interface SwaggerConstants {
             """;
     String APARTMENT_FULL_FORM = """
             {
-              "id": 0,
-              "title": {
-                "uz": "string",
-                "ru": "string",
-                "en": "string"
-              },
-              "floorNum": 0,
-              "buildingNum": 0,
-              "entranceNum": 0,
-              "roomCount": {
-                "uz": "string",
-                "ru": "string",
-                "en": "string"
-              },
-              "price": 0,
-              "photo": {
-                "id": 0,
-                "url": "string"
-              },
-              "active": true
+               "id": 0,
+               "buildingId": 0,
+               "title": {
+                 "uz": "string",
+                 "ru": "string",
+                 "en": "string"
+               },
+               "floorNum": 0,
+               "buildingNum": 0,
+               "entranceNum": 0,
+               "roomCount": {
+                 "uz": "string",
+                 "ru": "string",
+                 "en": "string"
+               },
+               "price": 0,
+               "photo": {
+                 "id": 0,
+                 "url": "string"
+               },
+               "active": true
             }\s
             """;
 
@@ -383,42 +384,43 @@ public interface SwaggerConstants {
 
     String INF_AREA_FULL_FORM = """
             {
-              "id": 0,
-              "sections": [
-                {
-                  "id": 0,
-                  "title": {
-                    "uz": "string",
-                    "ru": "string",
-                    "en": "string"
-                  },
-                  "description": {
-                    "uz": "string",
-                    "ru": "string",
-                    "en": "string"
-                  },
-                  "sectionItems": [
-                    {
-                      "id": 0,
-                      "name": {
-                        "uz": "string",
-                        "ru": "string",
-                        "en": "string"
-                      },
-                      "timeOrDistance": {
-                        "uz": "string",
-                        "ru": "string",
-                        "en": "string"
-                      }
-                    }
-                  ]
-                }
-              ],
-              "photo": {
-                "id": 0,
-                "url": "string"
-              }
-            }            
+               "id": 0,
+               "buildingId": 0,
+               "sections": [
+                 {
+                   "id": 0,
+                   "title": {
+                     "uz": "string",
+                     "ru": "string",
+                     "en": "string"
+                   },
+                   "description": {
+                     "uz": "string",
+                     "ru": "string",
+                     "en": "string"
+                   },
+                   "sectionItems": [
+                     {
+                       "id": 0,
+                       "name": {
+                         "uz": "string",
+                         "ru": "string",
+                         "en": "string"
+                       },
+                       "timeOrDistance": {
+                         "uz": "string",
+                         "ru": "string",
+                         "en": "string"
+                       }
+                     }
+                   ]
+                 }
+               ],
+               "photo": {
+                 "id": 0,
+                 "url": "string"
+               }
+            }           \s
             """;
 
     String INF_AREA_CUSTOM_FIELD = """
@@ -437,7 +439,7 @@ public interface SwaggerConstants {
                   ]
                 }
               ]
-            }            
+            }           \s
             """;
     String BUILD_FULL_FORM = """
             {

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import uz.result.rmcdeluxe.entity.InfrastructureArea;
 import uz.result.rmcdeluxe.entity.Photo;
+import uz.result.rmcdeluxe.payload.building.BuildingSubClassDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,9 +24,12 @@ public class InfrastructureAreaResponseDTO {
 
     Photo photo;
 
+    BuildingSubClassDTO build;
+
     public InfrastructureAreaResponseDTO(InfrastructureArea area) {
         this.id = area.getId();
         this.photo = area.getPhoto();
+        this.build = new BuildingSubClassDTO(area.getBuilding());
         this.sections = area.getSections().stream()
                 .map(InfrastructSectionResponseDTO::new)
                 .collect(Collectors.toList());
