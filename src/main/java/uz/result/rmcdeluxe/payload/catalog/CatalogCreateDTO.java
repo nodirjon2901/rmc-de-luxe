@@ -20,8 +20,6 @@ public class CatalogCreateDTO {
 
     String name;
 
-    Photo photo;
-
     Long districtId;
 
     Double price;

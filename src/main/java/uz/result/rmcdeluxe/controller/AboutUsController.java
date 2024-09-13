@@ -14,14 +14,18 @@ import org.springframework.web.multipart.MultipartFile;
 import uz.result.rmcdeluxe.documentation.SwaggerConstants;
 import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.aboutUs.*;
-import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
-import uz.result.rmcdeluxe.payload.catalog.CatalogUpdateDTO;
+import uz.result.rmcdeluxe.service.AboutUsBannerService;
+import uz.result.rmcdeluxe.service.AboutUsBodyService;
 
 @RestController
 @RequestMapping("/api/about-us")
 @RequiredArgsConstructor
 @Tag(name = "About Us - О нас")
 public class AboutUsController {
+
+    private final AboutUsBannerService bannerService;
+
+    private final AboutUsBodyService bodyService;
 
     @PostMapping(value = "/banner/create", consumes = {"multipart/form-data"})
     @Operation(summary = "This API used for create banner")
@@ -52,7 +56,7 @@ public class AboutUsController {
                             schema = @Schema(type = "string", format = "binary")))
             @RequestPart(value = "photo") MultipartFile photo
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bannerService.create(json, photo);
     }
 
     @GetMapping("/banner/get")
@@ -113,7 +117,7 @@ public class AboutUsController {
     public ResponseEntity<ApiResponse<?>> findBanner(
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bannerService.find(lang);
     }
 
     @PutMapping(value = "/banner/update", consumes = {"application/json"})
@@ -155,9 +159,9 @@ public class AboutUsController {
             )
     )
     public ResponseEntity<ApiResponse<AboutUsBannerResponseDTO>> update(
-            @RequestBody AboutUsBannerResponseDTO updateDTO
+            @RequestBody AboutUsBannerUpdateDTO updateDTO
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bannerService.update(updateDTO);
     }
 
     @DeleteMapping("/banner/delete")
@@ -179,7 +183,7 @@ public class AboutUsController {
                     ))
     })
     public ResponseEntity<ApiResponse<?>> delete() {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bannerService.delete();
     }
 
 /////////////////////////////////////////////////////
@@ -213,7 +217,7 @@ public class AboutUsController {
                             schema = @Schema(type = "string", format = "binary")))
             @RequestPart(value = "photo") MultipartFile photo
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bodyService.create(json, photo);
     }
 
     @GetMapping("/body/get")
@@ -274,7 +278,7 @@ public class AboutUsController {
     public ResponseEntity<ApiResponse<?>> findBody(
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bodyService.find(lang);
     }
 
     @PutMapping(value = "/body/update", consumes = {"application/json"})
@@ -316,9 +320,9 @@ public class AboutUsController {
             )
     )
     public ResponseEntity<ApiResponse<AboutUsBodyResponseDTO>> updateBody(
-            @RequestBody AboutUsBodyResponseDTO updateDTO
+            @RequestBody AboutUsBodyUpdateDTO updateDTO
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bodyService.update(updateDTO);
     }
 
     @DeleteMapping("/body/delete")
@@ -340,7 +344,7 @@ public class AboutUsController {
                     ))
     })
     public ResponseEntity<ApiResponse<?>> deleteBody() {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bodyService.delete();
     }
 
 }

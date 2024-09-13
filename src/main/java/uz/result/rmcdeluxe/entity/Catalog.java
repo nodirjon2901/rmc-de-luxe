@@ -2,6 +2,7 @@ package uz.result.rmcdeluxe.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import uz.result.rmcdeluxe.payload.catalog.CatalogCreateDTO;
@@ -33,6 +34,7 @@ public class Catalog {
     @JsonIgnore
     District district;
 
+    @Min(0)
     Double price;
 
     @ManyToOne
@@ -62,7 +64,6 @@ public class Catalog {
             return;
         }
         this.name = createDTO.getName();
-        this.photo = createDTO.getPhoto();
         this.price = createDTO.getPrice();
         if (createDTO.getNumberOfRooms() != null) {
             this.numberOfRoomsUz = createDTO.getNumberOfRooms().getUz();

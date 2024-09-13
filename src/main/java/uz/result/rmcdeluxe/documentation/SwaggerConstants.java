@@ -6,10 +6,6 @@ public interface SwaggerConstants {
             {
                "id": 0,
                "name": "string",
-               "photo": {
-                 "id": 0,
-                 "url": "string"
-               },
                "districtId": 0,
                "price": 0,
                "typeId": 0,
@@ -547,10 +543,6 @@ public interface SwaggerConstants {
                  "uz": "string",
                  "ru": "string",
                  "en": "string"
-               },
-               "photo": {
-                 "id": 0,
-                 "url": "string"
                }
              }
             """;
@@ -579,10 +571,6 @@ public interface SwaggerConstants {
                 "uz": "string",
                 "ru": "string",
                 "en": "string"
-              },
-              "photo": {
-                "id": 0,
-                "url": "string"
               }
             }
             """;

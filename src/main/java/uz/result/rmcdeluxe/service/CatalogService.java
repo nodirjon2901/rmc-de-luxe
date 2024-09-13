@@ -58,11 +58,15 @@ public class CatalogService {
             CatalogCreateDTO createDTO = objectMapper.readValue(json, CatalogCreateDTO.class);
             Optional<Catalog> optionalCatalog = catalogRepository.findByName(createDTO.getName());
             if (optionalCatalog.isPresent()) {
-                logger.warn("Catalog is already exists with name: " + createDTO.getName());
-                throw new AlreadyExistsException("Catalog is already exists this name");
+                logger.warn("Catalog is already exists with name:{}", createDTO.getName());
+                throw new AlreadyExistsException("Catalog is already exists with name: " + createDTO.getName());
             }
-            createDTO.setPhoto(photoService.save(photoFile));
+            if (createDTO.getPrice() < 0) {
+                logger.warn("Invalid price value: " + createDTO.getPrice());
+                throw new NotFoundException("Invalid price value: " + createDTO.getPrice());
+            }
             Catalog catalog = new Catalog(createDTO);
+            catalog.setPhoto(photoService.save(photoFile));
             catalog.setActive(true);
             catalog.setDistrict(districtRepository.findById(createDTO.getDistrictId())
                     .orElseThrow(() -> {
@@ -162,11 +166,15 @@ public class CatalogService {
     public ResponseEntity<ApiResponse<CatalogResponseDTO>> update(CatalogUpdateDTO updateDTO) {
         Catalog fromDb = catalogRepository.findById(updateDTO.getId())
                 .orElseThrow(() -> {
-                    logger.warn("Catalog is not found with id: " + updateDTO.getId());
+                    logger.warn("Catalog is not found with id: {}", updateDTO.getId());
                     return new NotFoundException("Catalog is not found with id: " + updateDTO.getId());
                 });
         ApiResponse<CatalogResponseDTO> response = new ApiResponse<>();
         if (updateDTO.getName() != null) {
+            if (checkName(updateDTO.getName())) {
+                logger.warn("Catalog is already exists with name: " + updateDTO.getName());
+                throw new AlreadyExistsException("Catalog is already exists with name: " + updateDTO.getName());
+            }
             fromDb.setName(updateDTO.getName());
             String slug = fromDb.getId() + "-" + SlugUtil.makeSlug(updateDTO.getName());
             fromDb.setSlug(slug);
@@ -195,31 +203,41 @@ public class CatalogService {
                     });
             fromDb.setType(type);
         }
-        if (updateDTO.getNumberOfRooms().getUz() != null) {
-            fromDb.setNumberOfRoomsUz(updateDTO.getNumberOfRooms().getUz());
+        if (updateDTO.getNumberOfRooms() != null) {
+            if (updateDTO.getNumberOfRooms().getUz() != null) {
+                fromDb.setNumberOfRoomsUz(updateDTO.getNumberOfRooms().getUz());
+            }
+            if (updateDTO.getNumberOfRooms().getRu() != null) {
+                fromDb.setNumberOfRoomsRu(updateDTO.getNumberOfRooms().getRu());
+            }
+            if (updateDTO.getNumberOfRooms().getEn() != null) {
+                fromDb.setNumberOfRoomsEn(updateDTO.getNumberOfRooms().getEn());
+            }
         }
-        if (updateDTO.getNumberOfRooms().getRu() != null) {
-            fromDb.setNumberOfRoomsRu(updateDTO.getNumberOfRooms().getRu());
-        }
-        if (updateDTO.getNumberOfRooms().getEn() != null) {
-            fromDb.setNumberOfRoomsEn(updateDTO.getNumberOfRooms().getEn());
-        }
-        if (updateDTO.getCompletionDate().getUz() != null) {
-            fromDb.setCompletionDateUz(updateDTO.getCompletionDate().getUz());
-        }
-        if (updateDTO.getCompletionDate().getRu() != null) {
-            fromDb.setCompletionDateRu(updateDTO.getCompletionDate().getRu());
-        }
-        if (updateDTO.getCompletionDate().getEn() != null) {
-            fromDb.setCompletionDateEn(updateDTO.getCompletionDate().getEn());
+        if (updateDTO.getCompletionDate() != null) {
+            if (updateDTO.getCompletionDate().getUz() != null) {
+                fromDb.setCompletionDateUz(updateDTO.getCompletionDate().getUz());
+            }
+            if (updateDTO.getCompletionDate().getRu() != null) {
+                fromDb.setCompletionDateRu(updateDTO.getCompletionDate().getRu());
+            }
+            if (updateDTO.getCompletionDate().getEn() != null) {
+                fromDb.setCompletionDateEn(updateDTO.getCompletionDate().getEn());
+            }
+
+            if (updateDTO.isActive() != fromDb.isActive()) {
+                fromDb.setActive(updateDTO.isActive());
+            }
         }
 
-        if (updateDTO.isActive() != fromDb.isActive()) {
-            fromDb.setActive(updateDTO.isActive());
-        }
 
         response.setData(new CatalogResponseDTO(catalogRepository.save(fromDb)));
+        response.setMessage("Successfully updated");
         return ResponseEntity.ok(response);
+    }
+
+    private boolean checkName(String name) {
+        return catalogRepository.findByName(name).isPresent();
     }
 
     public ResponseEntity<ApiResponse<?>> delete(Long id) {

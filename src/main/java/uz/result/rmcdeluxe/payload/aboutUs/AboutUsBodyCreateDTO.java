@@ -20,6 +20,4 @@ public class AboutUsBodyCreateDTO {
 
     Translation description;
 
-    Photo photo;
-
 }
