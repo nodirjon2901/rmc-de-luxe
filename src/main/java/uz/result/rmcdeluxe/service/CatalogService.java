@@ -2,7 +2,6 @@ package uz.result.rmcdeluxe.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,17 +10,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import uz.result.rmcdeluxe.entity.Catalog;
 import uz.result.rmcdeluxe.entity.District;
 import uz.result.rmcdeluxe.entity.HouseType;
-import uz.result.rmcdeluxe.entity.Photo;
 import uz.result.rmcdeluxe.exception.AlreadyExistsException;
 import uz.result.rmcdeluxe.exception.NotFoundException;
 import uz.result.rmcdeluxe.payload.ApiResponse;
-import uz.result.rmcdeluxe.payload.Translation;
 import uz.result.rmcdeluxe.payload.catalog.CatalogCreateDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
 import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
@@ -34,7 +29,6 @@ import uz.result.rmcdeluxe.util.SlugUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
