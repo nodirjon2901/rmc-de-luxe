@@ -14,8 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity(name = "building")
 public class Building {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 

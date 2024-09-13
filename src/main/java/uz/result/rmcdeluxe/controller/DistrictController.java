@@ -13,11 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.result.rmcdeluxe.documentation.SwaggerConstants;
 import uz.result.rmcdeluxe.payload.ApiResponse;
-import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
-import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
 import uz.result.rmcdeluxe.payload.district.DistrictCreateDTO;
 import uz.result.rmcdeluxe.payload.district.DistrictMapper;
 import uz.result.rmcdeluxe.payload.district.DistrictResponseDTO;
+import uz.result.rmcdeluxe.service.DistrictService;
 
 @RestController
 @RequestMapping("/api/district")
@@ -25,7 +24,9 @@ import uz.result.rmcdeluxe.payload.district.DistrictResponseDTO;
 @Tag(name = "District - Район")
 public class DistrictController {
 
-    @PostMapping(value = "/create",consumes = {"application/json"})
+    private final DistrictService districtService;
+
+    @PostMapping(value = "/create", consumes = {"application/json"})
     @Operation(summary = "This API used for create district")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -46,8 +47,8 @@ public class DistrictController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = DistrictCreateDTO.class))
             )
             @RequestBody DistrictCreateDTO createDTO
-            ){
-        return ResponseEntity.ok(new ApiResponse<>());
+    ) {
+        return districtService.create(createDTO);
     }
 
     @GetMapping("/get/{id}")
@@ -112,8 +113,8 @@ public class DistrictController {
     public ResponseEntity<ApiResponse<?>> findById(
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
-    ){
-        return ResponseEntity.ok(new ApiResponse<>());
+    ) {
+        return districtService.findById(id, lang);
     }
 
     @GetMapping("/get-all")
@@ -175,8 +176,8 @@ public class DistrictController {
     )
     public ResponseEntity<ApiResponse<?>> findAll(
             @RequestHeader(value = "Accept-Language", required = false) String lang
-    ){
-        return ResponseEntity.ok(new ApiResponse<>());
+    ) {
+        return districtService.findAll(lang);
     }
 
     @PutMapping("/update")
@@ -219,8 +220,8 @@ public class DistrictController {
     )
     public ResponseEntity<ApiResponse<DistrictResponseDTO>> update(
             @RequestBody DistrictResponseDTO updateDTO
-    ){
-        return ResponseEntity.ok(new ApiResponse<>());
+    ) {
+        return districtService.update(updateDTO);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -247,8 +248,8 @@ public class DistrictController {
             required = true)
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
-    ){
-        return ResponseEntity.ok(new ApiResponse<>());
+    ) {
+        return districtService.delete(id);
     }
 
 

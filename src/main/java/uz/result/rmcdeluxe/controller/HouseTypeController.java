@@ -16,6 +16,7 @@ import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.houseType.HouseTypeCreateDTO;
 import uz.result.rmcdeluxe.payload.houseType.HouseTypeMapper;
 import uz.result.rmcdeluxe.payload.houseType.HouseTypeResponseDTO;
+import uz.result.rmcdeluxe.service.HouseTypeService;
 
 @RestController
 @RequestMapping("/api/house-type")
@@ -23,7 +24,9 @@ import uz.result.rmcdeluxe.payload.houseType.HouseTypeResponseDTO;
 @Tag(name = "House Type - Тип жилья")
 public class HouseTypeController {
 
-    @PostMapping(value = "/create",consumes = {"application/json"})
+    private final HouseTypeService houseTypeService;
+
+    @PostMapping(value = "/create", consumes = {"application/json"})
     @Operation(summary = "This API used for create type")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -44,8 +47,8 @@ public class HouseTypeController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = HouseTypeCreateDTO.class))
             )
             @RequestBody HouseTypeCreateDTO createDTO
-    ){
-        return ResponseEntity.ok(new ApiResponse<>());
+    ) {
+        return houseTypeService.create(createDTO);
     }
 
     @GetMapping("/get/{id}")
@@ -110,8 +113,8 @@ public class HouseTypeController {
     public ResponseEntity<ApiResponse<?>> findById(
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
-    ){
-        return ResponseEntity.ok(new ApiResponse<>());
+    ) {
+        return houseTypeService.findById(id, lang);
     }
 
     @GetMapping("/get-all")
@@ -173,8 +176,8 @@ public class HouseTypeController {
     )
     public ResponseEntity<ApiResponse<?>> findAll(
             @RequestHeader(value = "Accept-Language", required = false) String lang
-    ){
-        return ResponseEntity.ok(new ApiResponse<>());
+    ) {
+        return houseTypeService.findAll(lang);
     }
 
     @PutMapping("/update")
@@ -216,9 +219,9 @@ public class HouseTypeController {
             )
     )
     public ResponseEntity<ApiResponse<HouseTypeResponseDTO>> update(
-            @RequestBody HouseTypeCreateDTO createDTO
-    ){
-        return ResponseEntity.ok(new ApiResponse<>());
+            @RequestBody HouseTypeResponseDTO updateDTO
+    ) {
+        return houseTypeService.update(updateDTO);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -245,8 +248,8 @@ public class HouseTypeController {
             required = true)
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
-    ){
-        return ResponseEntity.ok(new ApiResponse<>());
+    ) {
+        return houseTypeService.delete(id);
     }
 
 }

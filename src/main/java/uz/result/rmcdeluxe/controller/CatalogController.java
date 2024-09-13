@@ -18,12 +18,15 @@ import uz.result.rmcdeluxe.payload.catalog.CatalogCreateDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
 import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogUpdateDTO;
+import uz.result.rmcdeluxe.service.CatalogService;
 
 @RestController
 @RequestMapping("/api/catalog")
 @RequiredArgsConstructor
 @Tag(name = "Catalog - Каталог")
 public class CatalogController {
+
+    private final CatalogService catalogService;
 
     @PostMapping(value = "/create", consumes = {"multipart/form-data"})
     @Operation(summary = "This API used for create catalog")
@@ -54,7 +57,7 @@ public class CatalogController {
                             schema = @Schema(type = "string", format = "binary")))
             @RequestPart(value = "photo") MultipartFile photo
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return catalogService.create(json, photo);
     }
 
     @GetMapping("/get/{id}")
@@ -120,7 +123,7 @@ public class CatalogController {
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return catalogService.findById(id, lang);
     }
 
     @GetMapping("/get-by-slug/{slug}")
@@ -186,7 +189,7 @@ public class CatalogController {
             @PathVariable String slug,
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return catalogService.findSlug(slug, lang);
     }
 
     @GetMapping("/get-all")
@@ -299,7 +302,7 @@ public class CatalogController {
             @Parameter(hidden = true)
             @RequestParam(value = "size", required = false, defaultValue = "12") Integer size
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return catalogService.findAll(lang, districtId, fromPrice, toPrice, typeId, roomNumber, deadline, page, size);
     }
 
 
@@ -344,7 +347,7 @@ public class CatalogController {
     public ResponseEntity<ApiResponse<CatalogResponseDTO>> update(
             @RequestBody CatalogUpdateDTO updateDTO
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return catalogService.update(updateDTO);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -372,7 +375,7 @@ public class CatalogController {
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return catalogService.delete(id);
     }
 
 

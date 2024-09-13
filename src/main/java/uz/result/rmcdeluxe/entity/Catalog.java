@@ -2,26 +2,29 @@ package uz.result.rmcdeluxe.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import uz.result.rmcdeluxe.payload.catalog.CatalogCreateDTO;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity(name = "catalog")
 public class Catalog {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String slug;//unique
+    @Column(unique = true)
+    String slug;
 
-    String name;//unique
+    @Column(unique = true)
+    String name;
 
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     Photo photo;
@@ -53,5 +56,24 @@ public class Catalog {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "catalog", orphanRemoval = true)
     @JsonIgnore
     List<Building> buildingList;
+
+    public Catalog(CatalogCreateDTO createDTO) {
+        if (createDTO == null) {
+            return;
+        }
+        this.name = createDTO.getName();
+        this.photo = createDTO.getPhoto();
+        this.price = createDTO.getPrice();
+        if (createDTO.getNumberOfRooms() != null) {
+            this.numberOfRoomsUz = createDTO.getNumberOfRooms().getUz();
+            this.numberOfRoomsRu = createDTO.getNumberOfRooms().getRu();
+            this.numberOfRoomsEn = createDTO.getNumberOfRooms().getEn();
+        }
+        if (createDTO.getCompletionDate() != null) {
+            this.completionDateUz = createDTO.getCompletionDate().getUz();
+            this.completionDateRu = createDTO.getCompletionDate().getRu();
+            this.completionDateEn = createDTO.getCompletionDate().getEn();
+        }
+    }
 
 }

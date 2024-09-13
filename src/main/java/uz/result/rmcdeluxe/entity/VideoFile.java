@@ -22,9 +22,9 @@ public class VideoFile {
     @Column(unique = true)
     String videoUrl;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    Building building;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    Building building;
 
     @JsonIgnore
     String name;

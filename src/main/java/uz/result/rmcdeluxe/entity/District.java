@@ -1,23 +1,21 @@
 package uz.result.rmcdeluxe.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.OneToMany;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import uz.result.rmcdeluxe.payload.district.DistrictCreateDTO;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity(name = "district")
 public class District {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
@@ -29,5 +27,16 @@ public class District {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "district", orphanRemoval = true)
     List<Catalog> catalogs;
+
+    public District(DistrictCreateDTO createDTO) {
+        if (createDTO == null) {
+            return;
+        }
+        if (createDTO.getName() != null) {
+            this.nameUz = createDTO.getName().getUz();
+            this.nameRu = createDTO.getName().getRu();
+            this.nameEn = createDTO.getName().getEn();
+        }
+    }
 
 }

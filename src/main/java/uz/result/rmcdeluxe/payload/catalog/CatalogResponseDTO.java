@@ -47,14 +47,14 @@ public class CatalogResponseDTO {
         this.type = new HouseTypeResponseDTO(catalog.getType());
         this.active = catalog.isActive();
         this.numberOfRooms = new Translation(
-                numberOfRooms.getUz(),
-                numberOfRooms.getRu(),
-                numberOfRooms.getEn()
+                catalog.getNumberOfRoomsUz(),
+                catalog.getNumberOfRoomsRu(),
+                catalog.getNumberOfRoomsEn()
         );
         this.completionDate = new Translation(
-                completionDate.getUz(),
-                completionDate.getRu(),
-                completionDate.getEn()
+                catalog.getCompletionDateUz(),
+                catalog.getCompletionDateRu(),
+                catalog.getCompletionDateEn()
         );
     }
 

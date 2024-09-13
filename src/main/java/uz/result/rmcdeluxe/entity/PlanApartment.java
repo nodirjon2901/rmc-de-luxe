@@ -13,8 +13,10 @@ import uz.result.rmcdeluxe.entity.Photo;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity(name = "plan_apartment")
 public class PlanApartment {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 

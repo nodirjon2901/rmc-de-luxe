@@ -18,8 +18,6 @@ public class CatalogUpdateDTO {
 
     String name;
 
-    Photo photo;
-
     Long districtId;
 
     Double price;
