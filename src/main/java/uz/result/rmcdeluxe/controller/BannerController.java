@@ -16,12 +16,15 @@ import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.banner.*;
 import uz.result.rmcdeluxe.payload.blog.BlogResponseDTO;
 import uz.result.rmcdeluxe.payload.blog.BlogUpdateDTO;
+import uz.result.rmcdeluxe.service.BannerService;
 
 @RestController
 @RequestMapping("/api/banner")
 @RequiredArgsConstructor
 @Tag(name = "Banner - Баннер")
 public class BannerController {
+
+    private final BannerService bannerService;
 
     @PostMapping(value = "/add", consumes = "multipart/form-data")
     @Operation(summary = "This API used for create banner")
@@ -42,7 +45,7 @@ public class BannerController {
                     name = "json",
                     description = "Banner details in JSON format (excluding photo). Insert text data as JSON format",
                     required = true,
-                    schema = @Schema(implementation = BannerCreateDTO.class, format = "json", type = "string")
+                    schema = @Schema(implementation = BannerSliderCreateDTO.class, format = "json", type = "string")
             )
             @RequestPart(value = "json") String json,
             @Parameter(
@@ -54,7 +57,7 @@ public class BannerController {
             )
             @RequestPart(value = "photo") MultipartFile photo
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bannerService.create(json, photo);
     }
 
     @GetMapping("/get")
@@ -115,7 +118,7 @@ public class BannerController {
     public ResponseEntity<ApiResponse<?>> findBanner(
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bannerService.findAll(lang);
     }
 
     @GetMapping("/get/{id}")
@@ -181,7 +184,7 @@ public class BannerController {
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bannerService.findById(id, lang);
     }
 
     @PutMapping(value = "/update", consumes = {"application/json"})
@@ -219,24 +222,14 @@ public class BannerController {
                                     name = "Edit custom field",
                                     description = "Send field which you want",
                                     value = SwaggerConstants.BANNER_CUSTOM_FIELD
-                            ),
-                            @ExampleObject(
-                                    name = "Add slider",
-                                    description = SwaggerConstants.ADD_SLIDER_DESC,
-                                    value = SwaggerConstants.ADD_SLIDER_JSON
-                            ),
-                            @ExampleObject(
-                                    name = "Delete slider",
-                                    description = SwaggerConstants.DELETE_SLIDER_DESC,
-                                    value = SwaggerConstants.DELETE_SLIDER_JSON
                             )
                     }
             )
     )
-    public ResponseEntity<ApiResponse<BlogResponseDTO>> update(
-            @RequestBody BlogUpdateDTO updateDTO
-    ){
-        return ResponseEntity.ok(new ApiResponse<>());
+    public ResponseEntity<ApiResponse<BannerSliderResponseDTO>> update(
+            @RequestBody BannerSliderUpdateDTO updateDTO
+    ) {
+        return bannerService.update(updateDTO);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -264,7 +257,7 @@ public class BannerController {
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return bannerService.delete(id);
     }
 
 

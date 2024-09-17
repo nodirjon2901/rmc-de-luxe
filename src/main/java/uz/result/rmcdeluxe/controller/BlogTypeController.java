@@ -17,12 +17,15 @@ import uz.result.rmcdeluxe.payload.blog.BlogTypeCreateDTO;
 import uz.result.rmcdeluxe.payload.blog.BlogTypeMapper;
 import uz.result.rmcdeluxe.payload.blog.BlogTypeResponse;
 import uz.result.rmcdeluxe.payload.houseType.HouseTypeResponseDTO;
+import uz.result.rmcdeluxe.service.BlogTypeService;
 
 @RestController
 @RequestMapping("/api/blog-type")
 @RequiredArgsConstructor
 @Tag(name = "Blog type - Тип блога")
 public class BlogTypeController {
+
+    private final BlogTypeService typeService;
 
     @PostMapping(value = "/create", consumes = {"application/json"})
     @Operation(summary = "This API used for create type")
@@ -46,7 +49,7 @@ public class BlogTypeController {
             )
             @RequestBody BlogTypeCreateDTO createDTO
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return typeService.create(createDTO);
     }
 
     @GetMapping("/get/{id}")
@@ -112,7 +115,7 @@ public class BlogTypeController {
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return typeService.findById(id, lang);
     }
 
     @GetMapping("/get-all")
@@ -175,7 +178,7 @@ public class BlogTypeController {
     public ResponseEntity<ApiResponse<?>> findAll(
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return typeService.findAll(lang);
     }
 
     @PutMapping("/update")
@@ -216,10 +219,10 @@ public class BlogTypeController {
                     }
             )
     )
-    public ResponseEntity<ApiResponse<HouseTypeResponseDTO>> update(
-            @RequestBody BlogTypeCreateDTO createDTO
+    public ResponseEntity<ApiResponse<BlogTypeResponse>> update(
+            @RequestBody BlogTypeResponse update
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return typeService.update(update);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -247,7 +250,7 @@ public class BlogTypeController {
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return typeService.delete(id);
     }
 
 

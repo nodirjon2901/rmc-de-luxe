@@ -28,6 +28,4 @@ public class PlanApartmentCreateDTO {
 
     Double price;
 
-    Photo photo;
-
 }

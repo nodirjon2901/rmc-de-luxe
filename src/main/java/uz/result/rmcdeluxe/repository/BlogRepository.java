@@ -6,17 +6,18 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import uz.result.rmcdeluxe.entity.VideoFile;
+import uz.result.rmcdeluxe.entity.Blog;
 
 import java.util.Optional;
 
 @Repository
-public interface VideoFileRepository extends JpaRepository<VideoFile, Long> {
+public interface BlogRepository extends JpaRepository<Blog, Long> {
+
+    Optional<Blog> findBySlug(String slug);
 
     @Modifying
     @Transactional
-    @Query(value = "delete from video_file where id=:id", nativeQuery = true)
-    void deleteByCustom(@Param("id") Long id);
+    @Query(value = "update blog set slug=:slug where id=:id", nativeQuery = true)
+    void updateSlugById(@Param("id") Long id, @Param("slug") String slug);
 
-    Optional<VideoFile> findByVideoUrl(String url);
 }

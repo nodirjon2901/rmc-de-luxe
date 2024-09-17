@@ -11,10 +11,12 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity(name = "banner")
 public class Banner {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    final int id;
+    int id;
 
     @JsonProperty(value = "data")
     @OneToMany(mappedBy = "banner", fetch = FetchType.EAGER)

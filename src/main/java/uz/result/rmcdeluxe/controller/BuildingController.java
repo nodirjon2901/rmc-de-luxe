@@ -18,9 +18,11 @@ import uz.result.rmcdeluxe.payload.blog.BlogTypeCreateDTO;
 import uz.result.rmcdeluxe.payload.building.BuildingCreateDTO;
 import uz.result.rmcdeluxe.payload.building.BuildingMapper;
 import uz.result.rmcdeluxe.payload.building.BuildingResponseDTO;
+import uz.result.rmcdeluxe.payload.building.BuildingUpdateDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogCreateDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
 import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
+import uz.result.rmcdeluxe.service.BuildingService;
 
 import java.util.List;
 
@@ -29,6 +31,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Building Page")
 public class BuildingController {
+
+    private final BuildingService buildingService;
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
     @Operation(summary = "This API is used to create a new building entry with its gallery and videos.")
@@ -69,9 +73,8 @@ public class BuildingController {
             )
             @RequestPart(value = "video_list", required = false) List<MultipartFile> videoList
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return buildingService.create(json, gallery, videoList);
     }
-
 
 
     @GetMapping("/get/{id}")
@@ -137,7 +140,73 @@ public class BuildingController {
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return buildingService.findById(id, lang);
+    }
+
+    @GetMapping("/get-by-slug/{slug}")
+    @Operation(summary = "This API used to retrieve a build by its SLUG")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200-a",
+                    description = "a) Example schema for all language",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = BuildingResponseDTO.class)
+                    )),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200-b",
+                    description = "b) Example schema for one language",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = BuildingMapper.class)
+                    )),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "If get 400 Please READ RESPONSE MESSAGE!!! DON'T BE MAZGI",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class)
+                    ))
+    })
+    @Parameter(
+            name = "Accept-Language",
+            description = "Select language code one of : 'uz','ru','en' ",
+            examples = {
+                    @ExampleObject(
+                            name = "uz",
+                            description = "Data in uzbek",
+                            summary = "uz",
+                            value = "uz"
+                    ),
+                    @ExampleObject(
+                            name = "ru",
+                            description = "Data in russian",
+                            summary = "ru",
+                            value = "ru"
+                    ),
+                    @ExampleObject(
+                            name = "en",
+                            description = "Data in english",
+                            summary = "en",
+                            value = "en"
+                    ),
+                    @ExampleObject(
+                            name = "-",
+                            description = "Data in all language",
+                            summary = "-",
+                            value = "-"
+                    )
+            }
+    )
+    @Parameter(
+            name = "slug",
+            description = "SLUG of the build to be retrieved",
+            required = true)
+    public ResponseEntity<ApiResponse<?>> findBySlug(
+            @PathVariable String slug,
+            @RequestHeader(value = "Accept-Language", required = false) String lang
+    ) {
+        return buildingService.findBySlug(slug, lang);
     }
 
     @GetMapping("/get-all")
@@ -199,7 +268,7 @@ public class BuildingController {
     public ResponseEntity<ApiResponse<?>> findAll(
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return buildingService.findAll(lang);
     }
 
     @PutMapping("/update")
@@ -247,9 +316,9 @@ public class BuildingController {
             )
     )
     public ResponseEntity<ApiResponse<BuildingResponseDTO>> update(
-            @RequestBody BuildingResponseDTO updateDTO
+            @RequestBody BuildingUpdateDTO updateDTO
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return buildingService.update(updateDTO);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -277,7 +346,7 @@ public class BuildingController {
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return buildingService.delete(id);
     }
 
 

@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import uz.result.rmcdeluxe.entity.Photo;
+import uz.result.rmcdeluxe.payload.building.PlanApartmentCreateDTO;
 
 @Data
 @AllArgsConstructor
@@ -49,5 +49,24 @@ public class PlanApartment {
     @JsonIgnore
     Building building;
 
+    public PlanApartment(PlanApartmentCreateDTO createDTO) {
+        if (createDTO == null) {
+            return;
+        }
+        this.floorNum=createDTO.getFloorNum();
+        this.buildingNum=createDTO.getBuildingNum();
+        this.entranceNum=createDTO.getEntranceNum();
+        this.price=createDTO.getPrice();
+        if (createDTO.getTitle()!=null){
+            this.titleUz=createDTO.getTitle().getUz();
+            this.titleRu=createDTO.getTitle().getRu();
+            this.titleEn=createDTO.getTitle().getEn();
+        }
+        if (createDTO.getRoomCount()!=null){
+            this.roomCountUz=createDTO.getRoomCount().getUz();
+            this.roomCountRu=createDTO.getRoomCount().getRu();
+            this.roomCountEn=createDTO.getRoomCount().getEn();
+        }
+    }
 
 }

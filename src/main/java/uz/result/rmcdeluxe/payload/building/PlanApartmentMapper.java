@@ -43,7 +43,7 @@ public class PlanApartmentMapper {
         this.price = planApartment.getPrice();
         this.photo = planApartment.getPhoto();
         this.active = planApartment.isActive();
-        this.building=new BuildingSubClassDTO(planApartment.getBuilding());
+//        this.building=new BuildingSubClassDTO(planApartment.getBuilding());
         switch (lang.toLowerCase()) {
             case "uz": {
                 this.title = planApartment.getTitleUz();

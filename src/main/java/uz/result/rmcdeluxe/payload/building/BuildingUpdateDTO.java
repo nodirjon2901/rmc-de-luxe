@@ -15,12 +15,20 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BuildingCreateDTO {
+public class BuildingUpdateDTO {
+
+    Long id;
 
     Long catalogId;
 
     Translation title;
 
     Translation description;
+
+    List<Photo> gallery;
+
+    List<VideoFile> videoList;
+
+    boolean active;
 
 }

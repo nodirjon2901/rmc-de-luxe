@@ -30,8 +30,6 @@ public class PlanApartmentUpdateDTO {
 
     Double price;
 
-    Photo photo;
-
     boolean active;
 
 }

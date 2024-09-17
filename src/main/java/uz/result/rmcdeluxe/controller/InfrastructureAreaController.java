@@ -20,12 +20,15 @@ import uz.result.rmcdeluxe.payload.infrastructureArea.InfrastructureAreaCreateDT
 import uz.result.rmcdeluxe.payload.infrastructureArea.InfrastructureAreaMapper;
 import uz.result.rmcdeluxe.payload.infrastructureArea.InfrastructureAreaResponseDTO;
 import uz.result.rmcdeluxe.payload.infrastructureArea.InfrastructureAreaUpdateDTO;
+import uz.result.rmcdeluxe.service.InfrastructureAreaService;
 
 @RestController
 @RequestMapping("/api/infrastructure-area")
 @RequiredArgsConstructor
 @Tag(name = "Infrastructure Area - Инфраструктура района")
 public class InfrastructureAreaController {
+
+    private final InfrastructureAreaService areaService;
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
     @Operation(summary = "This API used for create InfArea")
@@ -56,7 +59,7 @@ public class InfrastructureAreaController {
                             schema = @Schema(type = "string", format = "binary")))
             @RequestPart(value = "photo") MultipartFile photo
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return areaService.create(json, photo);
     }
 
     @GetMapping("/get/{id}")
@@ -122,7 +125,7 @@ public class InfrastructureAreaController {
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return areaService.findById(id, lang);
     }
 
     @GetMapping("/get-all")
@@ -184,7 +187,7 @@ public class InfrastructureAreaController {
     public ResponseEntity<ApiResponse<?>> findAll(
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return areaService.findAll(lang);
     }
 
     @PutMapping(value = "/update", consumes = "application/json")
@@ -228,7 +231,7 @@ public class InfrastructureAreaController {
     public ResponseEntity<ApiResponse<InfrastructureAreaResponseDTO>> update(
             @RequestBody InfrastructureAreaUpdateDTO updateDTO
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return areaService.update(updateDTO);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -256,7 +259,7 @@ public class InfrastructureAreaController {
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return areaService.delete(id);
     }
 
 }

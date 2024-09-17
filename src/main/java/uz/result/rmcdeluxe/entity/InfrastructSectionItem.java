@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import uz.result.rmcdeluxe.payload.infrastructureArea.InfrastructSectionItemCreateDTO;
+import uz.result.rmcdeluxe.payload.infrastructureArea.InfrastructSectionItemResponseDTO;
 
 @Data
 @AllArgsConstructor
@@ -37,5 +39,39 @@ public class InfrastructSectionItem {
     @ManyToOne
     @JsonIgnore
     InfrastructSection section;
+
+    public InfrastructSectionItem(InfrastructSectionItemCreateDTO createDTO) {
+        if (createDTO == null) {
+            return;
+        }
+        if (createDTO.getName()!=null){
+            this.nameUz=createDTO.getName().getUz();
+            this.nameRu=createDTO.getName().getRu();
+            this.nameEn=createDTO.getName().getEn();
+        }
+        if (createDTO.getTimeOrDistance()!=null){
+            this.timeOrDistanceUz=createDTO.getTimeOrDistance().getUz();
+            this.timeOrDistanceRu=createDTO.getTimeOrDistance().getRu();
+            this.timeOrDistanceEn=createDTO.getTimeOrDistance().getEn();
+        }
+    }
+
+
+    public InfrastructSectionItem(InfrastructSectionItemResponseDTO dto){
+        if (dto==null){
+            return;
+        }
+        this.id=dto.getId();
+        if (dto.getName()!=null){
+            this.nameUz=dto.getName().getUz();
+            this.nameRu=dto.getName().getRu();
+            this.nameEn=dto.getName().getEn();
+        }
+        if (dto.getTimeOrDistance()!=null){
+            this.timeOrDistanceUz=dto.getTimeOrDistance().getUz();
+            this.timeOrDistanceRu=dto.getTimeOrDistance().getRu();
+            this.timeOrDistanceEn=dto.getTimeOrDistance().getEn();
+        }
+    }
 
 }

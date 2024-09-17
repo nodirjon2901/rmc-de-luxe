@@ -18,8 +18,6 @@ public class BannerSliderCreateDTO {
 
     Translation shortDescription;
 
-    Photo photo;
-
     String link;
 
 }

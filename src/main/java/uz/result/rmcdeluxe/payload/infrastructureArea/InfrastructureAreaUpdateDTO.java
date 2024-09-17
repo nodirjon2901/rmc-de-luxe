@@ -21,6 +21,4 @@ public class InfrastructureAreaUpdateDTO {
 
     List<InfrastructSectionResponseDTO> sections;
 
-    Photo photo;
-
 }

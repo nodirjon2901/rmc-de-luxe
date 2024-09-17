@@ -17,12 +17,15 @@ import uz.result.rmcdeluxe.payload.review.ReviewCreateDTO;
 import uz.result.rmcdeluxe.payload.review.ReviewMapper;
 import uz.result.rmcdeluxe.payload.review.ReviewResponseDTO;
 import uz.result.rmcdeluxe.payload.review.ReviewUpdateDTO;
+import uz.result.rmcdeluxe.service.ReviewService;
 
 @RestController
 @RequestMapping("/api/review")
 @RequiredArgsConstructor
 @Tag(name = "Review - Отзывы")
 public class ReviewController {
+
+    private final ReviewService reviewService;
 
     @PostMapping(value = "/create", consumes = {"application/json"})
     @Operation(summary = "This API used for create review")
@@ -46,7 +49,7 @@ public class ReviewController {
             )
             @RequestBody ReviewCreateDTO createDTO
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return reviewService.create(createDTO);
     }
 
     @GetMapping("/get/{id}")
@@ -112,7 +115,7 @@ public class ReviewController {
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return reviewService.findById(id, lang);
     }
 
     @GetMapping("/get-all")
@@ -172,10 +175,19 @@ public class ReviewController {
                     )
             }
     )
+    @Parameter(
+            name = "page",
+            description = "Page number to retrieve. Default is 1. Number of blogs to be retrieved per page default is 12",
+            required = false,
+            schema = @Schema(type = "integer", defaultValue = "1")
+    )
     public ResponseEntity<ApiResponse<?>> findAll(
-            @RequestHeader(value = "Accept-Language", required = false) String lang
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestHeader(value = "Accept-Language", required = false) String lang,
+            @Parameter(hidden = true)
+            @RequestParam(value = "size", required = false, defaultValue = "12") Integer size
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return reviewService.findAll(lang, page, size);
     }
 
     @PutMapping("/update")
@@ -219,7 +231,7 @@ public class ReviewController {
     public ResponseEntity<ApiResponse<ReviewResponseDTO>> update(
             @RequestBody ReviewUpdateDTO updateDTO
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return reviewService.update(updateDTO);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -247,7 +259,7 @@ public class ReviewController {
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return reviewService.delete(id);
     }
 
 }

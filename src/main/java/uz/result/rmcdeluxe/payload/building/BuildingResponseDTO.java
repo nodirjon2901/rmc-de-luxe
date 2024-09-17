@@ -9,7 +9,6 @@ import uz.result.rmcdeluxe.entity.Building;
 import uz.result.rmcdeluxe.entity.Photo;
 import uz.result.rmcdeluxe.entity.VideoFile;
 import uz.result.rmcdeluxe.payload.Translation;
-import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogSubClassDTO;
 
 import java.util.List;

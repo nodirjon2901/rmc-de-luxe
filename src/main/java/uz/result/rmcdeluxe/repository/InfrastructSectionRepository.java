@@ -6,17 +6,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import uz.result.rmcdeluxe.entity.VideoFile;
-
-import java.util.Optional;
+import uz.result.rmcdeluxe.entity.InfrastructSection;
 
 @Repository
-public interface VideoFileRepository extends JpaRepository<VideoFile, Long> {
+public interface InfrastructSectionRepository extends JpaRepository<InfrastructSection, Long> {
 
-    @Modifying
     @Transactional
-    @Query(value = "delete from video_file where id=:id", nativeQuery = true)
-    void deleteByCustom(@Param("id") Long id);
-
-    Optional<VideoFile> findByVideoUrl(String url);
+    @Modifying
+    @Query(value = "delete from infrastruct_section where id=:id", nativeQuery = true)
+    void deleteCustom(@Param("id") Long id);
 }

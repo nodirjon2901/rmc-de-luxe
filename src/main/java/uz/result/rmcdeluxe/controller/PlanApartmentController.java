@@ -20,12 +20,15 @@ import uz.result.rmcdeluxe.payload.building.PlanApartmentResponseDTO;
 import uz.result.rmcdeluxe.payload.building.PlanApartmentUpdateDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogUpdateDTO;
+import uz.result.rmcdeluxe.service.PlanApartmentService;
 
 @RestController
 @RequestMapping("/api/plan-apartment")
 @RequiredArgsConstructor
 @Tag(name = "Plan of apartment - Планировки и доступные квартиры")
 public class PlanApartmentController {
+
+    private final PlanApartmentService apartmentService;
 
     @PostMapping(value = "/create", consumes = {"multipart/form-data"})
     @Operation(summary = "This API used for create plan of apartment")
@@ -40,7 +43,7 @@ public class PlanApartmentController {
                     description = "If get 400 status Please read response 'message'. DON'T BE MAZGI",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))),
     })
-    public ResponseEntity<ApiResponse<CatalogResponseDTO>> create(
+    public ResponseEntity<ApiResponse<PlanApartmentResponseDTO>> create(
             @Parameter(
                     name = "json",
                     description = "PlanOfApartment details in JSON format (excluding photo). Insert text data as JSON format",
@@ -56,7 +59,7 @@ public class PlanApartmentController {
                             schema = @Schema(type = "string", format = "binary")))
             @RequestPart(value = "photo") MultipartFile photo
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return apartmentService.create(json, photo);
     }
 
     @GetMapping("/get/{id}")
@@ -122,7 +125,7 @@ public class PlanApartmentController {
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return apartmentService.findById(lang, id);
     }
 
     @GetMapping("/get-all")
@@ -205,14 +208,23 @@ public class PlanApartmentController {
             required = false,
             schema = @Schema(type = "string")
     )
+    @Parameter(
+            name = "page",
+            description = "Page number to retrieve. Default is 1. Number of blogs to be retrieved per page default is 12",
+            required = false,
+            schema = @Schema(type = "integer", defaultValue = "1")
+    )
     public ResponseEntity<ApiResponse<?>> findAllWithOptionalFilters(
             @RequestParam(value = "from", required = false) Double fromPrice,
             @RequestParam(value = "to", required = false) Double toPrice,
             @RequestParam(value = "room-number", required = false) String roomNumber,
-            @RequestParam(value = "floor", required = false) Integer deadline,
-            @RequestHeader(value = "Accept-Language", required = false) String lang
+            @RequestParam(value = "floor", required = false) Integer floorCount,
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestHeader(value = "Accept-Language", required = false) String lang,
+            @Parameter(hidden = true)
+            @RequestParam(value = "size", required = false, defaultValue = "12") Integer size
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return apartmentService.findAll(lang, page, size, fromPrice, toPrice, roomNumber,floorCount);
     }
 
 
@@ -257,7 +269,7 @@ public class PlanApartmentController {
     public ResponseEntity<ApiResponse<PlanApartmentResponseDTO>> update(
             @RequestBody PlanApartmentUpdateDTO updateDTO
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return apartmentService.update(updateDTO);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -285,7 +297,7 @@ public class PlanApartmentController {
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return apartmentService.delete(id);
     }
 
 }

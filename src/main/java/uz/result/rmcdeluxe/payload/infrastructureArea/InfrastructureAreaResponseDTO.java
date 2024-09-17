@@ -29,7 +29,7 @@ public class InfrastructureAreaResponseDTO {
     public InfrastructureAreaResponseDTO(InfrastructureArea area) {
         this.id = area.getId();
         this.photo = area.getPhoto();
-        this.build = new BuildingSubClassDTO(area.getBuilding());
+//        this.build = new BuildingSubClassDTO(area.getBuilding());
         this.sections = area.getSections().stream()
                 .map(InfrastructSectionResponseDTO::new)
                 .collect(Collectors.toList());

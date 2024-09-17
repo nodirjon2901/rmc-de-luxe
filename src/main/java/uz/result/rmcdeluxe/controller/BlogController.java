@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import uz.result.rmcdeluxe.documentation.SwaggerConstants;
 import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.blog.*;
+import uz.result.rmcdeluxe.service.BlogService;
 
 import java.util.List;
 
@@ -25,38 +26,7 @@ import java.util.List;
 @Tag(name = "Blog - Блог")
 public class BlogController {
 
-//    @PostMapping(value = "/create", consumes = {"multipart/form-data"})
-//    @Operation(summary = "This API used for create blog")
-//    @ApiResponses(value = {
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-//                    responseCode = "201",
-//                    description = "If successfully created you get  status '201'",
-//                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = BlogResponseDTO.class))
-//            ),
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-//                    responseCode = "400",
-//                    description = "If get 400 status Please read response 'message'. DON'T BE MAZGI",
-//                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))),
-//    })
-//    public ResponseEntity<ApiResponse<BlogResponseDTO>> create(
-//            @Parameter(
-//                    name = "json",
-//                    description = "Blog details in JSON format (excluding photo). Insert text data as JSON format",
-//                    required = true,
-//                    schema = @Schema(implementation = BlogCreateDTO.class, format = "json", type = "string")
-//            )
-//            @RequestPart(value = "json") String json,
-//            @Parameter(
-//                    name = "request",
-//                    description = "Multipart request containing photos for the blog. The photos are attached with keywords to associate them with specific blog options. Some blog options may contain images, others may not.",
-//                    required = true,
-//                    schema = @Schema(type = "file")
-//            )
-//            @RequestPart(value = "files") List<MultipartFile> files,
-//            @RequestPart(value = "keys") List<String> keys
-//    ) {
-//        return ResponseEntity.ok(new ApiResponse<>());
-//    }
+    private final BlogService blogService;
 
     @PostMapping(value = "/create", consumes = {"multipart/form-data"})
     @Operation(summary = "THIS API IS NOT FINISHED YET")
@@ -80,22 +50,9 @@ public class BlogController {
                     schema = @Schema(implementation = BlogCreateDTO.class, format = "json", type = "string")
             )
             @RequestPart(value = "json") String json,
-
-            @Parameter(
-                    name = "imageKeys",
-                    description = "JSON array with keys to indicate which image corresponds to which block. Each image key will match its uploaded image.",
-                    required = false
-            )
-            @RequestPart(value = "imageKeys", required = false) String imageKeys,
-
-            @Parameter(
-                    name = "files",
-                    description = "Multiple blog images in multipart format. You can upload multiple images.",
-                    required = false
-            )
-            @RequestPart(value = "files", required = false) List<MultipartFile> files
+            MultipartHttpServletRequest request
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return blogService.create(json, request);
     }
 
     @GetMapping("/get/{id}")
@@ -161,7 +118,7 @@ public class BlogController {
             @PathVariable Long id,
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return blogService.findById(id, lang);
     }
 
     @GetMapping("/get-by-slug/{slug}")
@@ -227,7 +184,7 @@ public class BlogController {
             @PathVariable String slug,
             @RequestHeader(value = "Accept-Language", required = false) String lang
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return blogService.findBySlug(slug, lang);
     }
 
     @GetMapping("/get-all")
@@ -393,7 +350,7 @@ public class BlogController {
     public ResponseEntity<ApiResponse<BlogResponseDTO>> update(
             @RequestBody BlogUpdateDTO updateDTO
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return blogService.update(updateDTO);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -421,7 +378,7 @@ public class BlogController {
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return blogService.delete(id);
     }
 
 

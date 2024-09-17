@@ -271,10 +271,6 @@ public interface SwaggerConstants {
                  "en": "string"
                },
                "price": 0,
-               "photo": {
-                 "id": 0,
-                 "url": "string"
-               },
                "active": true
             }\s
             """;
@@ -287,96 +283,76 @@ public interface SwaggerConstants {
             """;
     String BANNER_UPDATE_DESCRIPTION = """
             Send which field must edit.
-             1) If you need add new 'slider' Please send 'slider' without 'id' filed and it added
-             If you need remove 'slider' Please send only 'id' filed and it deleted
-             2) If you want to add a new slider during the update process. 
-             To add an image to the slider, you just send the url of the previously saved image
-                                        \s
+             \s
             """;
 
     String BANNER_FULL_FORM = """
             {
-                "id": 0,
-                "sliders": [
-                  {
-                    "id": 0,
-                    "title": {
-                      "uz": "string",
-                      "ru": "string",
-                      "en": "string"
-                    },
-                    "shortDescription": {
-                      "uz": "string",
-                      "ru": "string",
-                      "en": "string"
-                    },
-                    "photo": {
-                      "id": 0,
-                      "url": "string"
-                    },
-                    "link": "string",
-                    "orderNum": 0,
-                    "active": true
-                  }
-                ]
-              }
+               "id": 1,
+               "title": {
+                 "uz": "title",
+                 "ru": "string",
+                 "en": "string"
+               },
+               "shortDescription": {
+                 "uz": "description",
+                 "ru": "string",
+                 "en": "string"
+               },
+               "link": "string_url",
+               "orderNum": 1,
+               "active": true
+             }
             """;
 
     String BANNER_CUSTOM_FIELD = """
             {
-               "id": 0,
-               "sliders": [
-                 {
-                   "id": 0,
-                   "shortDescription": {
-                     "uz": "string"
-                   },
-                   "link": "string",
-                   "orderNum": 0
-                 }
-               ]
+               "id": 1,
+               "title": {
+                 "uz": "title"
+               }
              }
             """;
 
-    String ADD_SLIDER_DESC = "Send 'slider' without 'id' and it added. To add an image to the slider, you just send the url of the previously saved image You can add a lot 'slider' at the same time";
-
-    String ADD_SLIDER_JSON = """
-            {
-              "id": 0,
-              "sliders": [
-                  {
-                    "id": 0,
-                    "title": {
-                      "uz": "string",
-                      "ru": "string",
-                      "en": "string"
-                    },
-                    "shortDescription": {
-                      "uz": "string",
-                      "ru": "string",
-                      "en": "string"
-                    },
-                    "photo": {
-                      "url": "string"
-                    },
-                    "link": "string"
-                  }
-                ]
-            }
-            """;
-
-    String DELETE_SLIDER_DESC = "Send only 'slider' and 'id' and it deleted, you can delete a lot 'slider' at the same time";
-
-    String DELETE_SLIDER_JSON = """
-            {
-              "id": 0,
-              "sliders": [
-                {
-                  "id": 0
-                }
-              ]
-            }
-            """;
+//    String ADD_SLIDER_DESC = "Send 'slider' without 'id' and it added. To add an image to the slider, you just send the url of the previously saved image You can add a lot 'slider' at the same time";
+//
+//    String ADD_SLIDER_JSON = """
+//            {
+//              "id": 0,
+//              "sliders": [
+//                  {
+//                    "id": 0,
+//                    "title": {
+//                      "uz": "string",
+//                      "ru": "string",
+//                      "en": "string"
+//                    },
+//                    "shortDescription": {
+//                      "uz": "string",
+//                      "ru": "string",
+//                      "en": "string"
+//                    },
+//                    "photo": {
+//                      "url": "string"
+//                    },
+//                    "link": "string"
+//                  }
+//                ]
+//            }
+//            """;
+//
+//    String DELETE_SLIDER_DESC = "Send only 'slider' and 'id' and it deleted, you can delete a lot 'slider' at the same time";
+//
+//    String DELETE_SLIDER_JSON = """
+//            {
+//              "id": 0,
+//              "sliders": [
+//                {
+//                  "id": 0
+//                }
+//              ]
+//            }
+//            """;
 
     String INF_AREA_FULL_FORM = """
             {
@@ -440,6 +416,7 @@ public interface SwaggerConstants {
     String BUILD_FULL_FORM = """
             {
               "id": 0,
+              "catalogId":0,
               "title": {
                 "uz": "string",
                 "ru": "string",

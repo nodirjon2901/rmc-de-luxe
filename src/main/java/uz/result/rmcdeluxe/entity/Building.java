@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import uz.result.rmcdeluxe.payload.building.BuildingCreateDTO;
 
 import java.util.List;
 
@@ -54,5 +55,21 @@ public class Building {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "building", orphanRemoval = true)
     @JsonIgnore
     List<InfrastructureArea> areaList;
+
+    public Building(BuildingCreateDTO createDTO){
+        if (createDTO==null){
+            return;
+        }
+        if (createDTO.getTitle()!=null){
+            this.titleUz=createDTO.getTitle().getUz();
+            this.titleRu=createDTO.getTitle().getRu();
+            this.titleEn=createDTO.getTitle().getEn();
+        }
+        if (createDTO.getDescription()!=null){
+            this.descriptionUz=createDTO.getDescription().getUz();
+            this.descriptionRu=createDTO.getDescription().getRu();
+            this.descriptionEn=createDTO.getDescription().getEn();
+        }
+    }
 
 }

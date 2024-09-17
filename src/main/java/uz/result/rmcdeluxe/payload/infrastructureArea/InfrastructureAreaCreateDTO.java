@@ -17,8 +17,6 @@ public class InfrastructureAreaCreateDTO {
 
     List<InfrastructSectionCreateDTO> sections;
 
-    Photo photo;
-
     Long buildingId;
 
 }
