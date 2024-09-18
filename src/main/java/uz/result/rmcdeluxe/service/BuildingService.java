@@ -58,23 +58,25 @@ public class BuildingService {
             building.setVideoList(new ArrayList<>());
             Building save = buildingRepository.save(building);
             String slug = save.getId() + "-" + SlugUtil.makeSlug(save.getTitleEn());
-            for (MultipartFile photoFile : photoList) {
-                Photo photo = photoService.save(photoFile);
-                photo.setBuilding(save);
-                save.getGallery().add(photo);
+            if(photoList!=null && !photoList.isEmpty()){
+                for (MultipartFile photoFile : photoList) {
+                    Photo photo = photoService.save(photoFile);
+                    photo.setBuilding(save);
+                    save.getGallery().add(photo);
+                }
             }
-            for (MultipartFile videoFile : videoList) {
-                VideoFile video = Objects.requireNonNull(videoService.save(videoFile).getBody()).getData();
-                video.setBuilding(save);
-                save.getVideoList().add(video);
+            if (videoList!=null && !videoList.isEmpty()){
+                for (MultipartFile videoFile : videoList) {
+                    VideoFile video = Objects.requireNonNull(videoService.save(videoFile).getBody()).getData();
+                    video.setBuilding(save);
+                    save.getVideoList().add(video);
+                }
             }
             building.setCatalog(catalogRepository.findById(createDTO.getCatalogId())
                     .orElseThrow(() -> {
                         logger.warn("Catalog is not found with id: {}", createDTO.getCatalogId());
                         return new NotFoundException("Catalog is not found with id: " + createDTO.getCatalogId());
                     }));
-//            Building save = buildingRepository.save(building);
-//            String slug = save.getId() + "-" + SlugUtil.makeSlug(save.getTitleEn());
             save = buildingRepository.save(save);
             buildingRepository.updateSlug(slug, save.getId());
             save.setSlug(slug);

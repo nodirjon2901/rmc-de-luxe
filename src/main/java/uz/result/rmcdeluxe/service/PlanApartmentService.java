@@ -19,6 +19,7 @@ import uz.result.rmcdeluxe.payload.building.PlanApartmentCreateDTO;
 import uz.result.rmcdeluxe.payload.building.PlanApartmentMapper;
 import uz.result.rmcdeluxe.payload.building.PlanApartmentResponseDTO;
 import uz.result.rmcdeluxe.payload.building.PlanApartmentUpdateDTO;
+import uz.result.rmcdeluxe.repository.BuildingRepository;
 import uz.result.rmcdeluxe.repository.PlanApartmentRepository;
 
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ import java.util.List;
 public class PlanApartmentService {
 
     private final PlanApartmentRepository apartmentRepository;
+
+    private final BuildingRepository buildingRepository;
 
     private final ObjectMapper objectMapper;
 
@@ -43,7 +46,11 @@ public class PlanApartmentService {
             PlanApartment entity = new PlanApartment(createDTO);
             entity.setActive(true);
             entity.setPhoto(photoService.save(photoFile));
-            entity.setBuilding(null);
+            entity.setBuilding(buildingRepository.findById(createDTO.getBuildingId())
+                    .orElseThrow(() -> {
+                        logger.warn("Building is not found with id: {}", createDTO.getBuildingId());
+                        return new NotFoundException("Building is not found with id: " + createDTO.getBuildingId());
+                    }));
             response.setData(new PlanApartmentResponseDTO(apartmentRepository.save(entity)));
             response.setMessage("Successfully created");
             return ResponseEntity.status(201).body(response);
@@ -147,7 +154,11 @@ public class PlanApartmentService {
             fromDb.setEntranceNum(updateDTO.getEntranceNum());
         }
         if (updateDTO.getBuildingId() != null) {
-            fromDb.setBuilding(null);// not finished yet
+            fromDb.setBuilding(buildingRepository.findById(updateDTO.getBuildingId())
+                    .orElseThrow(() -> {
+                        logger.warn("Building is not found with id: {}", updateDTO.getBuildingId());
+                        return new NotFoundException("Building is not found with id: " + updateDTO.getBuildingId());
+                    }));
         }
 
         response.setData(new PlanApartmentResponseDTO(apartmentRepository.save(fromDb)));

@@ -18,7 +18,7 @@ public class VideoFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @JsonProperty(value = "url")
+//    @JsonProperty(value = "url")
     @Column(unique = true)
     String videoUrl;
 

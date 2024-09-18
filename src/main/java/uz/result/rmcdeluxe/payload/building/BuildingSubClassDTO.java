@@ -18,8 +18,8 @@ public class BuildingSubClassDTO {
     String slug;
 
     public BuildingSubClassDTO(Building build) {
-//        this.id = build.getId();
-//        this.slug = build.getSlug();
+        this.id = build.getId();
+        this.slug = build.getSlug();
     }
 
 }

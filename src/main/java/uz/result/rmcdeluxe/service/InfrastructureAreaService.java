@@ -11,10 +11,12 @@ import org.springframework.web.multipart.MultipartFile;
 import uz.result.rmcdeluxe.entity.InfrastructSection;
 import uz.result.rmcdeluxe.entity.InfrastructSectionItem;
 import uz.result.rmcdeluxe.entity.InfrastructureArea;
+import uz.result.rmcdeluxe.exception.AlreadyExistsException;
 import uz.result.rmcdeluxe.exception.NotFoundException;
 import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.Translation;
 import uz.result.rmcdeluxe.payload.infrastructureArea.*;
+import uz.result.rmcdeluxe.repository.BuildingRepository;
 import uz.result.rmcdeluxe.repository.InfrastructSectionItemRepository;
 import uz.result.rmcdeluxe.repository.InfrastructSectionRepository;
 import uz.result.rmcdeluxe.repository.InfrastructureAreaRepository;
@@ -32,6 +34,8 @@ public class InfrastructureAreaService {
 
     private final InfrastructSectionRepository sectionRepository;
 
+    private final BuildingRepository buildingRepository;
+
     private final PhotoService photoService;
 
     private final ObjectMapper objectMapper;
@@ -42,31 +46,32 @@ public class InfrastructureAreaService {
         ApiResponse<InfrastructureAreaResponseDTO> response = new ApiResponse<>();
         try {
             InfrastructureAreaCreateDTO createDTO = objectMapper.readValue(json, InfrastructureAreaCreateDTO.class);
+            if (areaRepository.existsByBuildingId(createDTO.getBuildingId())) {
+                logger.warn("InfrastructureArea is already saved with this building_id: {}", createDTO.getBuildingId());
+                throw new AlreadyExistsException("InfrastructureArea is already saved with this building_id: " + createDTO.getBuildingId());
+            }
             InfrastructureArea area = new InfrastructureArea(createDTO);
             area.setPhoto(photoService.save(photoFile));
-            area.setBuilding(null);
-
-            // Birinchi bo'lib sectionni saqlaymiz:
+            area.setBuilding(buildingRepository.findById(createDTO.getBuildingId())
+                    .orElseThrow(() -> {
+                        logger.warn("Building is not found with id: {}", createDTO.getBuildingId());
+                        return new NotFoundException("Building is not found with id: " + createDTO.getBuildingId());
+                    }));
             List<InfrastructSection> sections = area.getSections();
-            area.setSections(null); // Avval sectionsni null qilib turamiz, faqat area ni saqlaymiz
-            areaRepository.save(area);  // Area saqlanadi
-
-            // Endi section va sectionItemni bog'laymiz:
+            area.setSections(null);
+            areaRepository.save(area);
             if (sections != null) {
                 for (InfrastructSection section : sections) {
-                    section.setInfrastructureArea(area);  // Har bir sectionga area ni set qilamiz
+                    section.setInfrastructureArea(area);
                     if (section.getSectionItems() != null) {
                         for (InfrastructSectionItem item : section.getSectionItems()) {
-                            item.setSection(section);  // Har bir itemga sectionni set qilamiz
+                            item.setSection(section);
                         }
                     }
                 }
-                area.setSections(sections);  // Endi sectionsni yana area ga set qilamiz
+                area.setSections(sections);
             }
-
-            // Endi barcha o'zgartirilgan sections va itemlar bilan area ni yana saqlaymiz
             InfrastructureArea savedArea = areaRepository.save(area);
-
             response.setData(new InfrastructureAreaResponseDTO(savedArea));
             response.setMessage("Successfully created");
             return ResponseEntity.status(201).body(response);
@@ -118,6 +123,14 @@ public class InfrastructureAreaService {
                     logger.warn("Area is not found with id: {}", updateDTO.getId());
                     return new NotFoundException("Area is not found with id: " + updateDTO.getId());
                 });
+
+        if (updateDTO.getBuildingId() != null) {
+            fromDb.setBuilding(buildingRepository.findById(updateDTO.getBuildingId())
+                    .orElseThrow(() -> {
+                        logger.warn("Building is not found with id: {}", updateDTO.getBuildingId());
+                        return new NotFoundException("Building is not found with id: " + updateDTO.getBuildingId());
+                    }));
+        }
 
         List<InfrastructSectionResponseDTO> sections = updateDTO.getSections();
         List<InfrastructSection> dbSections = fromDb.getSections();

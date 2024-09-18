@@ -1,6 +1,19 @@
 {
-  "id": 1,
-  "title": {
-    "uz": "title"
-  }
+  "options": [
+    {
+      "title": {
+        "uz": "string",
+        "ru": "string",
+        "en": "string"
+      },
+      "description": {
+        "uz": "string",
+        "ru": "string",
+        "en": "string"
+      },
+      "orderNum": 0
+    }
+  ],
+  "typeId": 1,
+  "main": true
 }

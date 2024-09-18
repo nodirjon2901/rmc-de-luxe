@@ -21,10 +21,13 @@ public class BlogOptionResponseDTO {
 
     Translation description;
 
+    Integer orderNum;
+
     Photo photo;
 
     public BlogOptionResponseDTO(BlogOption option) {
         this.id = option.getId();
+        this.orderNum= option.getOrderNum();
         this.photo = option.getPhoto();
         this.title = new Translation(
                 option.getTitleUz(),

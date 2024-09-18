@@ -22,8 +22,6 @@ public class BlogResponseDTO {
 
     String slug;
 
-    BlogOptionResponseDTO headOption;
-
     List<BlogOptionResponseDTO> options;
 
     BlogTypeResponse type;
@@ -44,7 +42,6 @@ public class BlogResponseDTO {
         this.viewCounter= blog.getViewCounter();
         this.active= blog.isActive();
         this.main= blog.isMain();
-        this.headOption=new BlogOptionResponseDTO(blog.getHeadOption());
         this.options=blog.getOptions().stream()
                 .map(BlogOptionResponseDTO::new)
                 .collect(Collectors.toList());

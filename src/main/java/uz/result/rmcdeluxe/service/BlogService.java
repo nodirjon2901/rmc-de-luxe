@@ -2,21 +2,28 @@ package uz.result.rmcdeluxe.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import uz.result.rmcdeluxe.entity.Blog;
-import uz.result.rmcdeluxe.entity.BlogOption;
-import uz.result.rmcdeluxe.entity.BlogType;
-import uz.result.rmcdeluxe.entity.Photo;
+import uz.result.rmcdeluxe.entity.*;
 import uz.result.rmcdeluxe.exception.NotFoundException;
 import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.Translation;
 import uz.result.rmcdeluxe.payload.blog.*;
+import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
+import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
+import uz.result.rmcdeluxe.payload.review.ReviewMapper;
+import uz.result.rmcdeluxe.payload.review.ReviewResponseDTO;
 import uz.result.rmcdeluxe.repository.BlogOptionRepository;
 import uz.result.rmcdeluxe.repository.BlogRepository;
 import uz.result.rmcdeluxe.repository.BlogTypeRepository;
@@ -24,8 +31,10 @@ import uz.result.rmcdeluxe.repository.PhotoRepository;
 import uz.result.rmcdeluxe.util.SlugUtil;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,52 +58,44 @@ public class BlogService {
         ApiResponse<BlogResponseDTO> response = new ApiResponse<>();
         try {
             BlogCreateDTO createDTO = objectMapper.readValue(json, BlogCreateDTO.class);
-            Iterator<String> fileNames = request.getFileNames();
-            Blog blog = new Blog(createDTO);
-            if (createDTO.getOptions() != null && !createDTO.getOptions().isEmpty()) {
-                List<BlogOption> blogOptions = new ArrayList<>();
-                for (BlogOptionCreateDTO optionDTO : createDTO.getOptions()) {
-                    BlogOption option = new BlogOption(optionDTO);
-                    option.setBlog(blog);
-                    blogOptions.add(option);
-                }
-                blog.setOptions(blogOptions);
+            if (createDTO.getOptions() == null || createDTO.getOptions().isEmpty()) {
+                logger.warn("At least one option must be saved");
+                throw new NotFoundException("At least one option must be saved");
             }
+            Iterator<String> fileNames = request.getFileNames();
             while (fileNames.hasNext()) {
                 String key = fileNames.next();
                 MultipartFile photo = request.getFile(key);
-                setBlogPhoto(key, photo, blog);
+                setBlogPhoto(key, photo, createDTO);
             }
-
+            Blog blog = new Blog(createDTO);
             blog.setActive(true);
+            blog.setViewCounter(0);
             blog.setType(typeRepository.findById(createDTO.getTypeId())
                     .orElseThrow(() -> {
-                        logger.warn("Type is not found with id: {}", createDTO.getTypeId());
-                        return new NotFoundException("Type is not found with id: " + createDTO.getTypeId());
+                        logger.warn("Type of blog is not found with id: {}", createDTO.getTypeId());
+                        return new NotFoundException("Type of blog is not found with id: " + createDTO.getTypeId());
                     }));
-
-            Blog savedBlog = blogRepository.save(blog);
-            String slug = savedBlog.getId() + "-" + SlugUtil.makeSlug(savedBlog.getHeadOption().getDescriptionEn());
-            blogRepository.updateSlugById(savedBlog.getId(), slug);
-            savedBlog.setSlug(slug);
-            response.setData(new BlogResponseDTO(savedBlog));
-            response.setMessage("Successfully saved");
+            Blog save = blogRepository.save(blog);
+            String slug = save.getId() + "-" + SlugUtil.makeSlug(save.getOptions().get(0).getTitleEn());
+            blogRepository.updateSlugById(save.getId(), slug);
+            save.setSlug(slug);
+            response.setData(new BlogResponseDTO(save));
+            response.setMessage("Successfully created");
             return ResponseEntity.status(201).body(response);
-        } catch (JsonProcessingException e) {
+        } catch (
+                JsonProcessingException e) {
             logger.error("Error processing JSON for blog creation", e);
             response.setMessage(e.getMessage());
             return ResponseEntity.status(400).body(response);
         }
     }
 
-    private void setBlogPhoto(String key, MultipartFile photo, Blog blog) {
-        if (key.equalsIgnoreCase("main-photo")) {
-            blog.getHeadOption().setPhoto(photoService.save(photo));
-            return;
-        }
+
+    private void setBlogPhoto(String key, MultipartFile photo, BlogCreateDTO createDTO) {
         int index = Integer.parseInt(key.substring(12)) - 1;
-        BlogOption option = blog.getOptions().get(index);
-        option.setPhoto(photoService.save(photo));
+        BlogOptionCreateDTO optionCreateDTO = createDTO.getOptions().get(index);
+        optionCreateDTO.setPhoto(photoService.save(photo));
     }
 
     public ResponseEntity<ApiResponse<?>> findById(Long id, String lang) {
@@ -133,6 +134,51 @@ public class BlogService {
         return ResponseEntity.ok(response);
     }
 
+    public ResponseEntity<ApiResponse<?>> findAll(String lang, Integer page, Integer size, Boolean main,
+                                                  Boolean popular, Boolean aNew, Boolean old, Long typeId) {
+        List<Blog> blogList = new ArrayList<>();
+        if (page != null) {
+            Pageable pageable = PageRequest.of(page - 1, size);
+            Page<Blog> all = blogRepository.findAll(pageable);
+            blogList = all.getContent();
+        } else {
+            blogList = blogRepository.findAll();
+        }
+
+        if (main != null)
+            blogList = blogList.stream().filter(Blog::isMain).collect(Collectors.toList());
+        if (popular != null && popular) {
+            blogList = blogList.stream()
+                    .sorted(Comparator.comparing(Blog::getViewCounter).reversed())
+                    .collect(Collectors.toList());
+        }
+        if (aNew != null && aNew) {
+            blogList = blogList.stream()
+                    .sorted(Comparator.comparing(Blog::getCreatedDate).reversed())
+                    .collect(Collectors.toList());
+        }
+        if (old != null && old) {
+            blogList = blogList.stream()
+                    .sorted(Comparator.comparing(Blog::getCreatedDate))
+                    .collect(Collectors.toList());
+        }
+        if (typeId != null)
+            blogList = blogList.stream().filter(blog -> blog.getType().getId().equals(typeId)).collect(Collectors.toList());
+
+        if (lang == null || lang.equals("-")) {
+            ApiResponse<List<BlogResponseDTO>> response = new ApiResponse<>();
+            response.setData(new ArrayList<>());
+            blogList.forEach(blog -> response.getData().add(new BlogResponseDTO(blog)));
+            response.setMessage("Successfully found");
+            return ResponseEntity.ok(response);
+        }
+        ApiResponse<List<BlogMapper>> response = new ApiResponse<>();
+        response.setData(new ArrayList<>());
+        blogList.forEach(blog -> response.getData().add(new BlogMapper(blog, lang)));
+        response.setMessage("Successfully found");
+        return ResponseEntity.ok(response);
+    }
+
     public ResponseEntity<ApiResponse<BlogResponseDTO>> update(BlogUpdateDTO updateDTO) {
         ApiResponse<BlogResponseDTO> response = new ApiResponse<>();
         Blog fromDb = blogRepository.findById(updateDTO.getId())
@@ -140,125 +186,91 @@ public class BlogService {
                     logger.warn("Blog is not found with id: {}", updateDTO.getId());
                     return new NotFoundException("Blog is not found with id: " + updateDTO.getId());
                 });
-
-        if (updateDTO.getHeadOption() != null) {
-            BlogOptionResponseDTO headOption = updateDTO.getHeadOption();
-            if (headOption.getTitle() != null) {
-                Translation title = headOption.getTitle();
-                if (title.getEn() != null) {
-                    fromDb.getHeadOption().setTitleUz(title.getEn());
-                    String slug = fromDb.getId() + "-" + SlugUtil.makeSlug(title.getEn());
-                    fromDb.setSlug(slug);
-                }
-                if (title.getRu() != null) {
-                    fromDb.getHeadOption().setTitleRu(title.getRu());
-                }
-                if (title.getUz() != null) {
-                    fromDb.getHeadOption().setTitleUz(title.getUz());
-                }
-            }
-            if (headOption.getDescription() != null) {
-                Translation description = headOption.getDescription();
-                if (description.getUz() != null) {
-                    fromDb.getHeadOption().setDescriptionUz(description.getUz());
-                }
-                if (description.getRu() != null) {
-                    fromDb.getHeadOption().setDescriptionRu(description.getRu());
-                }
-                if (description.getEn() != null) {
-                    fromDb.getHeadOption().setDescriptionEn(description.getEn());
-                }
-            }
-        }
         if (updateDTO.getTypeId() != null) {
-            BlogType type = typeRepository.findById(updateDTO.getId())
+            fromDb.setType(typeRepository.findById(updateDTO.getTypeId())
                     .orElseThrow(() -> {
-                        logger.warn("Type is not found with id: " + updateDTO.getTypeId());
+                        logger.warn("Type is not found with id: {}", updateDTO.getTypeId());
                         return new NotFoundException("Type is not found with id: " + updateDTO.getTypeId());
-                    });
-            fromDb.setType(type);
+                    }));
         }
-
-        if (updateDTO.getOptions() != null) {
-            List<BlogOption> fromDbOptions = fromDb.getOptions();
-            List<BlogOptionResponseDTO> blogOptions = updateDTO.getOptions();
+        if (updateDTO.isActive() != fromDb.isActive()) {
+            fromDb.setActive(updateDTO.isActive());
+        }
+        if (updateDTO.isMain() != fromDb.isMain()) {
+            fromDb.setMain(fromDb.isMain());
+        }
+        if (updateDTO.getOptions() != null && !updateDTO.getOptions().isEmpty()) {
+            List<BlogOptionResponseDTO> options = updateDTO.getOptions();
+            List<BlogOption> dbOptions = fromDb.getOptions();
             List<BlogOption> optionsToRemove = new ArrayList<>();
 
-            for (BlogOptionResponseDTO blogOption : blogOptions) {
-                for (BlogOption dbOption : fromDbOptions) {
-                    if (blogOption.getId() != null && blogOption.getId().equals(dbOption.getId())) {
-                        if (blogOption.getTitle() != null) {
-                            Translation title = blogOption.getTitle();
-                            if (title.getUz() != null) {
-                                dbOption.setTitleUz(title.getUz());
+            for (BlogOptionResponseDTO option : options) {
+                if (option.getId() != null) {
+                    for (BlogOption dbOption : dbOptions) {
+                        if (dbOption.getId().equals(option.getId())) {
+                            if (option.getOrderNum() != null) {
+                                dbOption.setId(option.getId());
                             }
-                            if (title.getRu() != null) {
-                                dbOption.setTitleRu(title.getRu());
+                            if (option.getTitle() != null) {
+                                Translation title = option.getTitle();
+                                if (title.getUz() != null) {
+                                    dbOption.setTitleUz(title.getUz());
+                                }
+                                if (title.getRu() != null) {
+                                    dbOption.setTitleRu(title.getRu());
+                                }
+                                if (title.getEn() != null) {
+                                    dbOption.setTitleEn(title.getEn());
+                                }
                             }
-                            if (title.getEn() != null) {
-                                dbOption.setTitleEn(title.getEn());
+                            if (option.getDescription() != null) {
+                                Translation description = option.getDescription();
+                                if (description.getUz() != null) {
+                                    dbOption.setDescriptionUz(description.getUz());
+                                }
+                                if (description.getRu() != null) {
+                                    dbOption.setDescriptionRu(description.getRu());
+                                }
+                                if (description.getEn() != null) {
+                                    dbOption.setDescriptionEn(description.getEn());
+                                }
                             }
-                        }
-                        if (blogOption.getDescription() != null) {
-                            Translation description = blogOption.getDescription();
-                            if (description.getUz() != null) {
-                                dbOption.setDescriptionUz(description.getUz());
+                            if (option.getPhoto() != null) {
+                                Photo photo = option.getPhoto();
+                                if (photo.getHttpUrl() != null && photo.getId() == null) {
+                                    Photo photoEntity = photoRepository.findByHttpUrl(photo.getHttpUrl())
+                                            .orElseThrow(() -> {
+                                                logger.warn("Photo is not found with url: {}", photo.getHttpUrl());
+                                                return new NotFoundException("Photo is not found with url: " + photo.getHttpUrl());
+                                            });
+                                    dbOption.setPhoto(photoEntity);
+                                }
                             }
-                            if (description.getRu() != null) {
-                                dbOption.setDescriptionRu(description.getRu());
+                            if (option.getOrderNum() != null) {
+                                dbOption.setOrderNum(option.getOrderNum());
                             }
-                            if (description.getEn() != null) {
-                                dbOption.setDescriptionEn(description.getEn());
+                            if (option.getTitle() == null && option.getDescription() == null
+                                    && option.getOrderNum() == null && option.getPhoto() == null && option.getId() != null) {
+                                optionsToRemove.add(dbOption);
                             }
-                        }
-                        if (blogOption.getPhoto() != null && dbOption.getPhoto() == null) {
-                            Photo photo = blogOption.getPhoto();
-                            if (photo.getId() == null && photo.getHttpUrl() != null) {
-                                Photo newPhoto = photoRepository.findByHttpUrl(photo.getHttpUrl())
-                                        .orElseThrow(() -> {
-                                            logger.warn("Photo is not found with url: {}", photo.getHttpUrl());
-                                            return new NotFoundException("Photo is not found with url: " + photo.getHttpUrl());
-                                        });
-                                dbOption.setPhoto(newPhoto);
-                            }
-                        }
-                        if (blogOption.getPhoto() == null && dbOption.getPhoto() != null) {
-                            Photo photo = dbOption.getPhoto();
-                            dbOption.setPhoto(null);
-                            photoService.delete(photo.getId());
-                        }
-                        if (blogOption.getPhoto() == null && blogOption.getTitle() == null && blogOption.getDescription() == null) {
-                            optionsToRemove.add(dbOption);
                         }
                     }
-                    if (blogOption.getId() == null) {
-                        BlogOption newBlogOption = new BlogOption(blogOption);
-                        if (newBlogOption.getPhoto() != null) {
-                            Photo photo = newBlogOption.getPhoto();
-                            if (photo.getHttpUrl() != null && photo.getId() == null) {
-                                Photo photo1 = photoRepository.findByHttpUrl(photo.getHttpUrl())
-                                        .orElseThrow(() -> {
-                                            logger.warn("Photo is not found with id: {}", photo.getHttpUrl());
-                                            return new NotFoundException("Photo is not found with url: " + photo.getHttpUrl());
-                                        });
-                                newBlogOption.setPhoto(photo1);
-                            }
-                        }
-                        newBlogOption.setBlog(fromDb);
-                        fromDbOptions.add(newBlogOption);
+                    for (BlogOption removeOption : optionsToRemove) {
+                        dbOptions.remove(removeOption);
+                        optionRepository.deleteCustom(removeOption.getId());
                     }
-                }
-                for (BlogOption option : optionsToRemove) {
-                    fromDbOptions.remove(option);
-                    optionRepository.deleteCustom(option.getId());
+                } else {
+                    BlogOption blogOption = new BlogOption(option);
+                    blogOption.setBlog(fromDb);
+                    dbOptions.add(blogOption);
                 }
             }
         }
+
         response.setData(new BlogResponseDTO(blogRepository.save(fromDb)));
         response.setMessage("Successfully updated");
         return ResponseEntity.ok(response);
     }
-
 
     public ResponseEntity<ApiResponse<?>> delete(Long id) {
         ApiResponse<?> response = new ApiResponse<>();
@@ -269,6 +281,17 @@ public class BlogService {
                 });
         blogRepository.delete(blog);
         response.setMessage("Successfully deleted");
+        return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<ApiResponse<?>> incrementView(Long id) {
+        ApiResponse<?> response = new ApiResponse<>();
+        if (!blogRepository.existsById(id)) {
+            logger.warn("Blog is not found with id: {}", id);
+            throw new NotFoundException("Blog is not found with id: " + id);
+        }
+        blogRepository.updateViewBlog(id);
+        response.setMessage("Successfully increased");
         return ResponseEntity.ok(response);
     }
 

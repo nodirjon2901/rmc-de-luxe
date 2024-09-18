@@ -20,4 +20,8 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
     @Query(value = "update blog set slug=:slug where id=:id", nativeQuery = true)
     void updateSlugById(@Param("id") Long id, @Param("slug") String slug);
 
+    @Modifying
+    @Transactional
+    @Query(value = "update blog b set view_counter=view_counter+1 where b.id=:id", nativeQuery = true)
+    void updateViewBlog(@Param("id") Long id);
 }

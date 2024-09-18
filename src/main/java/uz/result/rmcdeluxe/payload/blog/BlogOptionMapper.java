@@ -21,10 +21,13 @@ public class BlogOptionMapper {
 
     String description;
 
+    Integer orderNum;
+
     Photo photo;
 
     public BlogOptionMapper(BlogOption option, String lang) {
         this.id = option.getId();
+        this.orderNum= option.getOrderNum();
         this.photo = option.getPhoto();
         switch (lang.toLowerCase()) {
             case "uz": {

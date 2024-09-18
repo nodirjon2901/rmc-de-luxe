@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import uz.result.rmcdeluxe.entity.Photo;
 
 import java.util.Date;
 import java.util.List;
@@ -14,8 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BlogCreateDTO {
-
-    BlogOptionCreateDTO headOption;
 
     List<BlogOptionCreateDTO> options;
 

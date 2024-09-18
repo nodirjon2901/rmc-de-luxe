@@ -11,14 +11,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import uz.result.rmcdeluxe.documentation.SwaggerConstants;
 import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.blog.*;
 import uz.result.rmcdeluxe.service.BlogService;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/blog")
@@ -280,17 +278,17 @@ public class BlogController {
             schema = @Schema(type = "integer", defaultValue = "1")
     )
     public ResponseEntity<ApiResponse<?>> findAllWithOptionalFilters(
-            @RequestParam(value = "main", required = false) boolean main,
-            @RequestParam(value = "popular", required = false) boolean popular,
-            @RequestParam(value = "new", required = false) boolean aNew,
-            @RequestParam(value = "old", required = false) boolean old,
+            @RequestParam(value = "main", required = false) Boolean main,
+            @RequestParam(value = "popular", required = false) Boolean popular,
+            @RequestParam(value = "new", required = false) Boolean aNew,
+            @RequestParam(value = "old", required = false) Boolean old,
             @RequestParam(value = "typeID", required = false) Long typeId,
-            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
             @RequestHeader(value = "Accept-Language", required = false) String lang,
             @Parameter(hidden = true)
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
     ) {
-        return ResponseEntity.ok(new ApiResponse<>());
+        return blogService.findAll(lang, page, size, main, popular, aNew, old, typeId);
     }
 
     @PutMapping(value = "/update", consumes = {"application/json"})
@@ -379,6 +377,37 @@ public class BlogController {
             @PathVariable Long id
     ) {
         return blogService.delete(id);
+    }
+
+    @PutMapping("/increase-view/{id}")
+    @Operation(summary = "This API is used to increase the view counter of a blog by its ID")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "View counter successfully increased",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class)
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "If get 400 Please READ RESPONSE MESSAGE!!! DON'T BE MAZGI",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class)
+                    ))
+    })
+    @Parameter(
+            name = "id",
+            description = "ID of the blog whose view counter needs to be increased",
+            required = true,
+            schema = @Schema(type = "integer")
+    )
+    public ResponseEntity<ApiResponse<?>> increaseView(
+            @PathVariable Long id
+    ) {
+        return blogService.incrementView(id);
     }
 
 

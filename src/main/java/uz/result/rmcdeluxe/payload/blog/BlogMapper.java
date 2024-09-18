@@ -23,8 +23,6 @@ public class BlogMapper {
 
     String slug;
 
-    BlogOptionMapper headOption;
-
     List<BlogOptionMapper> options;
 
     BlogTypeMapper type;
@@ -45,7 +43,6 @@ public class BlogMapper {
         this.viewCounter = blog.getViewCounter();
         this.active = blog.isActive();
         this.main = blog.isMain();
-        this.headOption = new BlogOptionMapper(blog.getHeadOption(), lang);
         this.options = blog.getOptions().stream()
                 .map(option -> new BlogOptionMapper(option, lang))
                 .collect(Collectors.toList());

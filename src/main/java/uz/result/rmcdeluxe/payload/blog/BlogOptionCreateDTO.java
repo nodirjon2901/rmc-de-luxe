@@ -18,4 +18,8 @@ public class BlogOptionCreateDTO {
 
     Translation description;
 
+    Integer orderNum;
+
+    Photo photo;
+
 }

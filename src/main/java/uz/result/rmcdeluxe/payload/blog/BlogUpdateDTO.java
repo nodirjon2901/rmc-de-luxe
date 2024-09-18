@@ -16,8 +16,6 @@ public class BlogUpdateDTO {
 
     Long id;
 
-    BlogOptionResponseDTO headOption;
-
     List<BlogOptionResponseDTO> options;
 
     Long typeId;
