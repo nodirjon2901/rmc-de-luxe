@@ -175,7 +175,7 @@ public class BlogController {
             }
     )
     @Parameter(
-            name = "id",
+            name = "slug",
             description = "SLUG of the blog to be retrieved",
             required = true)
     public ResponseEntity<ApiResponse<?>> findBySlug(
