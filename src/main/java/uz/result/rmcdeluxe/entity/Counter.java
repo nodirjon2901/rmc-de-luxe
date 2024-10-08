@@ -1,34 +1,28 @@
 package uz.result.rmcdeluxe.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity(name = "application")
-public class Application {
+@Entity(name = "counter")
+public class Counter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String fullName;
+    @Enumerated(EnumType.STRING)
+    Button section;
 
-    String phoneNum;
-
-    String email;
-
-    @Column(length = 500)
-    String question;
+    Long countCall;
 
     @CreationTimestamp
     LocalDateTime createdDate;
