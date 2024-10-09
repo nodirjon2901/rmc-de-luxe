@@ -48,7 +48,7 @@ public class RmcBot extends TelegramLongPollingBot {
         sendMessage.setChatId(groupChatId);
         sendMessage.setParseMode("Markdown");
         sendMessage.setText(
-                "*Новый комментарий*\n\n" +
+                "*Новое заявка*\n\n" +
                         "\uD83D\uDC64 *ФИО*: " + application.getFullName() + "\n" +
                         "\uD83D\uDCDE *Номер телефона*: " + application.getPhoneNum() + "\n" +
                         "\uD83D\uDCE7 *Электронная почта*: " + application.getEmail() + "\n" +
