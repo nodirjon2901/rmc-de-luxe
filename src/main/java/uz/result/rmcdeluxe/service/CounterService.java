@@ -42,8 +42,8 @@ public class CounterService {
     }
 
 
-//        @Scheduled(cron = "0 * * * * *")//every minute
-    @Scheduled(cron = "0 0 0 * * SUN")
+    //        @Scheduled(cron = "0 * * * * *")//every minute
+    @Scheduled(cron = "0 0 0 * * MON", zone = "Asia/Tashkent")
     public void checkAndSendCounter() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime oneWeekAgo = now.minusWeeks(1);
