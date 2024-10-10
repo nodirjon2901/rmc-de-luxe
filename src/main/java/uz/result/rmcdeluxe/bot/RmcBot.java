@@ -69,9 +69,9 @@ public class RmcBot extends TelegramLongPollingBot {
         sendMessage.setText(
                 "*Новое заявка*\n\n" +
                         "\uD83D\uDC64 *ФИО*: " + application.getFullName() + "\n" +
-                        "\uD83C\uDFE2 *Название компании **: " + application.getCompanyName() + "\n" +
+                        "\uD83C\uDFE2 *Название компании*: " + application.getCompanyName() + "\n" +
                         "\uD83D\uDCDE *Номер телефона*: " + application.getPhoneNum() + "\n" +
-                        "\uD83D\uDCE7 *Выберите услугу **: " + application.getService() + "\n" +
+                        "\uD83D\uDCE7 *Выберите услугу*: " + application.getService() + "\n" +
                         "\uD83D\uDCAC *Сообщение*: " + application.getMessage() + "\n"
         );
         try {
