@@ -283,7 +283,10 @@ public class BlogService {
         }
 
         BlogResponseDTO responseDTO = new BlogResponseDTO(blogRepository.save(fromDb));
-        responseDTO.getOptions().sort(Comparator.comparing(BlogOptionResponseDTO::getOrderNum));
+        responseDTO.getOptions().sort(Comparator.nullsLast(Comparator.comparing(
+                BlogOptionResponseDTO::getOrderNum,
+                Comparator.nullsFirst(Integer::compareTo)
+        )));
         response.setData(responseDTO);
         response.setMessage("Successfully updated");
         return ResponseEntity.ok(response);
