@@ -17,6 +17,8 @@ import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.PhotoDTO;
 import uz.result.rmcdeluxe.service.PhotoService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/photo")
 @RequiredArgsConstructor
@@ -28,8 +30,8 @@ public class PhotoController
 
     @PostMapping(value = "/create",consumes = {"multipart/form-data"})
     @Operation(summary = "Upload photo to server")
-    public ResponseEntity<ApiResponse<Photo>> upload(
-            @RequestParam(value = "photo") MultipartFile photo)
+    public ResponseEntity<ApiResponse<List<Photo>>> upload(
+            @RequestParam(value = "photo") List<MultipartFile> photo)
     {
         return photoService.upload(photo);
     }

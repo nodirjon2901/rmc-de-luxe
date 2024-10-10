@@ -1,4 +1,4 @@
-package uz.result.rmcdeluxe.entity.temporary.investment;
+package uz.result.rmcdeluxe.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,23 +14,13 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity(name = "purchase_process_step")
-public class PurchaseProcessStep {
-
+@Entity(name = "investment_application")
+public class ApplicationOfInvestment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String titleUz;
 
-    String titleRu;
 
-    String titleEn;
-
-    String descriptionUz;
-
-    String descriptionRu;
-
-    String descriptionEn;
 }

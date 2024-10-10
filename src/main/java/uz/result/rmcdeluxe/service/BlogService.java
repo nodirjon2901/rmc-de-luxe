@@ -93,7 +93,7 @@ public class BlogService {
 
 
     private void setBlogPhoto(String key, MultipartFile photo, BlogCreateDTO createDTO) {
-        int index = Integer.parseInt(key.substring(12)) - 1;
+        int index = Integer.parseInt(key.substring(12));
         BlogOptionCreateDTO optionCreateDTO = createDTO.getOptions().get(index);
         optionCreateDTO.setPhoto(photoService.save(photo));
     }
