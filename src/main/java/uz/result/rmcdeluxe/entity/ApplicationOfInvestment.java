@@ -1,14 +1,14 @@
 package uz.result.rmcdeluxe.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +21,18 @@ public class ApplicationOfInvestment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    String fullName;
 
+    String companyName;
+
+    String phoneNum;
+
+    String service;
+
+    @Column(length = 3000)
+    String message;
+
+    @CreationTimestamp
+    LocalDateTime createdDate;
 
 }

@@ -5,8 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.result.rmcdeluxe.bot.RmcBot;
 import uz.result.rmcdeluxe.entity.Application;
+import uz.result.rmcdeluxe.entity.ApplicationOfInvestment;
 import uz.result.rmcdeluxe.exception.NotFoundException;
 import uz.result.rmcdeluxe.payload.ApiResponse;
+import uz.result.rmcdeluxe.repository.ApplicationOfInvestmentRepository;
 import uz.result.rmcdeluxe.repository.ApplicationRepository;
 
 @Service
@@ -15,12 +17,23 @@ public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
 
+    private final ApplicationOfInvestmentRepository applicationOfInvestmentRepository;
+
     private final RmcBot bot;
 
     public ResponseEntity<ApiResponse<Application>> create(Application application) {
         ApiResponse<Application> response = new ApiResponse<>();
         Application save = applicationRepository.save(application);
         bot.handleSendApplication(save);
+        response.setMessage("Successfully created");
+        response.setData(save);
+        return ResponseEntity.status(201).body(response);
+    }
+
+    public ResponseEntity<ApiResponse<ApplicationOfInvestment>> createInvApplication(ApplicationOfInvestment applicationOfInvestment) {
+        ApiResponse<ApplicationOfInvestment> response = new ApiResponse<>();
+        ApplicationOfInvestment save = applicationOfInvestmentRepository.save(applicationOfInvestment);
+        bot.handleSendInvestmentApplication(save);
         response.setMessage("Successfully created");
         response.setData(save);
         return ResponseEntity.status(201).body(response);

@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import uz.result.rmcdeluxe.entity.Application;
+import uz.result.rmcdeluxe.entity.ApplicationOfInvestment;
 import uz.result.rmcdeluxe.entity.Button;
 import uz.result.rmcdeluxe.entity.Counter;
 
@@ -53,6 +54,25 @@ public class RmcBot extends TelegramLongPollingBot {
                         "\uD83D\uDCDE *Номер телефона*: " + application.getPhoneNum() + "\n" +
                         "\uD83D\uDCE7 *Электронная почта*: " + application.getEmail() + "\n" +
                         "\uD83D\uDCAC *Вопрос*: " + application.getQuestion() + "\n"
+        );
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleSendInvestmentApplication(ApplicationOfInvestment application) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(groupChatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText(
+                "*Новое заявка*\n\n" +
+                        "\uD83D\uDC64 *ФИО*: " + application.getFullName() + "\n" +
+                        "\uD83C\uDFE2 *Название компании **: " + application.getCompanyName() + "\n" +
+                        "\uD83D\uDCDE *Номер телефона*: " + application.getPhoneNum() + "\n" +
+                        "\uD83D\uDCE7 *Выберите услугу **: " + application.getService() + "\n" +
+                        "\uD83D\uDCAC *Сообщение*: " + application.getMessage() + "\n"
         );
         try {
             execute(sendMessage);

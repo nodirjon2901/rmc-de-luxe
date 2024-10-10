@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.result.rmcdeluxe.entity.Application;
+import uz.result.rmcdeluxe.entity.ApplicationOfInvestment;
 import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.service.ApplicationService;
 
@@ -19,6 +20,13 @@ public class ApplicationController {
             @RequestBody Application application
     ) {
         return applicationService.create(application);
+    }
+
+    @PostMapping("/investment/create")
+    public ResponseEntity<ApiResponse<ApplicationOfInvestment>> createInvestmentApp(
+            @RequestBody ApplicationOfInvestment applicationOfInvestment
+    ){
+        return applicationService.createInvApplication(applicationOfInvestment);
     }
 
     @DeleteMapping("/delete/{id}")
