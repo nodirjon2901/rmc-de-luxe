@@ -2,7 +2,6 @@ package uz.result.rmcdeluxe.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import uz.result.rmcdeluxe.entity.*;
@@ -20,10 +17,6 @@ import uz.result.rmcdeluxe.exception.NotFoundException;
 import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.Translation;
 import uz.result.rmcdeluxe.payload.blog.*;
-import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
-import uz.result.rmcdeluxe.payload.catalog.CatalogResponseDTO;
-import uz.result.rmcdeluxe.payload.review.ReviewMapper;
-import uz.result.rmcdeluxe.payload.review.ReviewResponseDTO;
 import uz.result.rmcdeluxe.repository.BlogOptionRepository;
 import uz.result.rmcdeluxe.repository.BlogRepository;
 import uz.result.rmcdeluxe.repository.BlogTypeRepository;
@@ -76,11 +69,17 @@ public class BlogService {
                         logger.warn("Type of blog is not found with id: {}", createDTO.getTypeId());
                         return new NotFoundException("Type of blog is not found with id: " + createDTO.getTypeId());
                     }));
+            List<BlogOption> optionList = blog.getOptions();
+            for (int i = 0; i < optionList.size(); i++) {
+                optionList.get(i).setOrderNum(i);
+            }
             Blog save = blogRepository.save(blog);
-            String slug = save.getId() + "-" + SlugUtil.makeSlug(save.getOptions().get(0).getTitleEn());
+            String slug = save.getId() + "-" + SlugUtil.makeSlug(save.getOptions().get(0).getTitleRu());
             blogRepository.updateSlugById(save.getId(), slug);
             save.setSlug(slug);
-            response.setData(new BlogResponseDTO(save));
+            BlogResponseDTO responseDTO = new BlogResponseDTO(save);
+            responseDTO.getOptions().sort(Comparator.comparing(BlogOptionResponseDTO::getOrderNum));
+            response.setData(responseDTO);
             response.setMessage("Successfully created");
             return ResponseEntity.status(201).body(response);
         } catch (
@@ -106,12 +105,16 @@ public class BlogService {
                 });
         if (lang == null || lang.equals("-")) {
             ApiResponse<BlogResponseDTO> response = new ApiResponse<>();
-            response.setData(new BlogResponseDTO(blog));
+            BlogResponseDTO responseDTO = new BlogResponseDTO(blog);
+            responseDTO.getOptions().sort(Comparator.comparing(BlogOptionResponseDTO::getOrderNum));
+            response.setData(responseDTO);
             response.setMessage("Successfully found");
             return ResponseEntity.ok(response);
         }
         ApiResponse<BlogMapper> response = new ApiResponse<>();
-        response.setData(new BlogMapper(blog, lang));
+        BlogMapper responseDTO = new BlogMapper(blog, lang);
+        responseDTO.getOptions().sort(Comparator.comparing(BlogOptionMapper::getOrderNum));
+        response.setData(responseDTO);
         response.setMessage("Successfully found");
         return ResponseEntity.ok(response);
     }
@@ -124,12 +127,16 @@ public class BlogService {
                 });
         if (lang == null || lang.equals("-")) {
             ApiResponse<BlogResponseDTO> response = new ApiResponse<>();
-            response.setData(new BlogResponseDTO(blog));
+            BlogResponseDTO responseDTO = new BlogResponseDTO(blog);
+            responseDTO.getOptions().sort(Comparator.comparing(BlogOptionResponseDTO::getOrderNum));
+            response.setData(responseDTO);
             response.setMessage("Successfully found");
             return ResponseEntity.ok(response);
         }
         ApiResponse<BlogMapper> response = new ApiResponse<>();
-        response.setData(new BlogMapper(blog, lang));
+        BlogMapper responseDTO = new BlogMapper(blog, lang);
+        responseDTO.getOptions().sort(Comparator.comparing(BlogOptionMapper::getOrderNum));
+        response.setData(responseDTO);
         response.setMessage("Successfully found");
         return ResponseEntity.ok(response);
     }
@@ -168,13 +175,21 @@ public class BlogService {
         if (lang == null || lang.equals("-")) {
             ApiResponse<List<BlogResponseDTO>> response = new ApiResponse<>();
             response.setData(new ArrayList<>());
-            blogList.forEach(blog -> response.getData().add(new BlogResponseDTO(blog)));
+            blogList.forEach(blog -> {
+                BlogResponseDTO responseDTO = new BlogResponseDTO(blog);
+                responseDTO.getOptions().sort(Comparator.comparing(BlogOptionResponseDTO::getOrderNum));
+                response.getData().add(responseDTO);
+            });
             response.setMessage("Successfully found");
             return ResponseEntity.ok(response);
         }
         ApiResponse<List<BlogMapper>> response = new ApiResponse<>();
         response.setData(new ArrayList<>());
-        blogList.forEach(blog -> response.getData().add(new BlogMapper(blog, lang)));
+        blogList.forEach(blog -> {
+            BlogMapper responseDTO = new BlogMapper(blog, lang);
+            responseDTO.getOptions().sort(Comparator.comparing(BlogOptionMapper::getOrderNum));
+            response.getData().add(responseDTO);
+        });
         response.setMessage("Successfully found");
         return ResponseEntity.ok(response);
     }
@@ -267,7 +282,9 @@ public class BlogService {
             }
         }
 
-        response.setData(new BlogResponseDTO(blogRepository.save(fromDb)));
+        BlogResponseDTO responseDTO = new BlogResponseDTO(blogRepository.save(fromDb));
+        responseDTO.getOptions().sort(Comparator.comparing(BlogOptionResponseDTO::getOrderNum));
+        response.setData(responseDTO);
         response.setMessage("Successfully updated");
         return ResponseEntity.ok(response);
     }
