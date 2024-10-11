@@ -126,7 +126,7 @@ public class PhotoService {
         photo.setName(originalFileName);
         photo.setFilepath(filePath.toFile().getAbsolutePath());
         photo.setType(file.getContentType());
-        photo.setHttpUrl(baseUrl + "/photo/" + photo.getName());
+        photo.setHttpUrl(baseUrl + "/api/photo/get/" + photo.getName());
     }
 
     public void deleteFromFile(String filePath) throws IOException {

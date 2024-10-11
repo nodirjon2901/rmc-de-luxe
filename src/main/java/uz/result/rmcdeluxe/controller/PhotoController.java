@@ -20,7 +20,7 @@ import uz.result.rmcdeluxe.service.PhotoService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/photo")
+@RequestMapping("/api/photo")
 @RequiredArgsConstructor
 @Tag(name = "Photo - Фото")
 public class PhotoController
