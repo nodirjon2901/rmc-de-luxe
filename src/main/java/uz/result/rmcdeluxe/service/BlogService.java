@@ -93,6 +93,10 @@ public class BlogService {
 
     private void setBlogPhoto(String key, MultipartFile photo, BlogCreateDTO createDTO) {
         int index = Integer.parseInt(key.substring(12));
+        int size = createDTO.getOptions().size();
+        if ((index+1)>size){
+            throw new NotFoundException("The number of photos has exceeded the number of options.");
+        }
         BlogOptionCreateDTO optionCreateDTO = createDTO.getOptions().get(index);
         optionCreateDTO.setPhoto(photoService.save(photo));
     }
