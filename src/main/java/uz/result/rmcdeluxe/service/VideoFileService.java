@@ -93,7 +93,7 @@ public class VideoFileService {
 
         video.setName(originalFileName);
         video.setFilepath(filePath.toFile().getAbsolutePath());
-        video.setVideoUrl(baseUrl + "/video/" + video.getName());
+        video.setVideoUrl(baseUrl + "/api/video/get/" + video.getName());
     }
 
     public ResponseEntity<Resource> getVideoByName(HttpHeaders headers, String fileName) throws IOException {
