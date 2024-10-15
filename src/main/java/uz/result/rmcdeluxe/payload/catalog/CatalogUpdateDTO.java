@@ -18,11 +18,11 @@ public class CatalogUpdateDTO {
 
     String name;
 
-    Long districtId;
+    String districtName;
 
     Double price;
 
-    Long typeId;
+    String typeName;
 
     Translation numberOfRooms;
 

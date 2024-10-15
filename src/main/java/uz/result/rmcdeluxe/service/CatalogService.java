@@ -62,16 +62,16 @@ public class CatalogService {
             Catalog catalog = new Catalog(createDTO);
             catalog.setPhoto(photoService.save(photoFile));
             catalog.setActive(true);
-            catalog.setDistrict(districtRepository.findById(createDTO.getDistrictId())
+            catalog.setDistrict(districtRepository.findByNameIgnoreCase(createDTO.getDistrictName())
                     .orElseThrow(() -> {
-                        logger.warn("District is not found with id: " + createDTO.getDistrictId());
-                        return new NotFoundException("District is not found with id: " + createDTO.getDistrictId());
+                        logger.warn("District is not found with name: " + createDTO.getDistrictName());
+                        return new NotFoundException("District is not found with name: " + createDTO.getDistrictName());
                     })
             );
-            catalog.setType(typeRepository.findById(createDTO.getTypeId())
+            catalog.setType(typeRepository.findByNameIgnoreCase(createDTO.getTypeName())
                     .orElseThrow(() -> {
-                        logger.warn("Type is not found with id: {}", createDTO.getTypeId());
-                        return new NotFoundException("Type is not found with id: " + createDTO.getTypeId());
+                        logger.warn("Type is not found with type: {}", createDTO.getTypeName());
+                        return new NotFoundException("Type is not found with type: " + createDTO.getTypeName());
                     })
             );
             Catalog save = catalogRepository.save(catalog);
@@ -173,11 +173,11 @@ public class CatalogService {
             String slug = fromDb.getId() + "-" + SlugUtil.makeSlug(updateDTO.getName());
             fromDb.setSlug(slug);
         }
-        if (updateDTO.getDistrictId() != null) {
-            District district = districtRepository.findById(updateDTO.getDistrictId())
+        if (updateDTO.getDistrictName() != null) {
+            District district = districtRepository.findByNameIgnoreCase(updateDTO.getDistrictName())
                     .orElseThrow(() -> {
-                        logger.warn("District is not found with id: {}", updateDTO.getDistrictId());
-                        return new NotFoundException("District is not found with id: " + updateDTO.getDistrictId());
+                        logger.warn("District is not found with name: {}", updateDTO.getDistrictName());
+                        return new NotFoundException("District is not found with name: " + updateDTO.getDistrictName());
                     });
             fromDb.setDistrict(district);
         }
@@ -189,11 +189,11 @@ public class CatalogService {
                 throw new NotFoundException("Invalid price value: " + updateDTO.getPrice());
             }
         }
-        if (updateDTO.getTypeId() != null) {
-            HouseType type = typeRepository.findById(updateDTO.getTypeId())
+        if (updateDTO.getTypeName() != null) {
+            HouseType type = typeRepository.findByNameIgnoreCase(updateDTO.getTypeName())
                     .orElseThrow(() -> {
-                        logger.warn("Type is not found with id: {}", updateDTO.getTypeId());
-                        return new NotFoundException("Type is not found with id: " + updateDTO.getTypeId());
+                        logger.warn("Type is not found with name: {}", updateDTO.getTypeName());
+                        return new NotFoundException("Type is not found with name: " + updateDTO.getTypeName());
                     });
             fromDb.setType(type);
         }

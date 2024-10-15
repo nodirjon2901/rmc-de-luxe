@@ -20,11 +20,11 @@ public class CatalogCreateDTO {
 
     String name;
 
-    Long districtId;
+    String districtName;
 
     Double price;
 
-    Long typeId;
+    String typeName;
 
     Translation numberOfRooms;
 
