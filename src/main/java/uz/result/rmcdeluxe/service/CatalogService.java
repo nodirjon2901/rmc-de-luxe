@@ -124,20 +124,24 @@ public class CatalogService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<ApiResponse<?>> findAll(String lang, Long districtId, Double fromPrice, Double toPrice,
-                                                  Long typeId, String roomNumber, String deadline, Integer page, Integer size) {
+    public ResponseEntity<ApiResponse<?>> findAll(String lang, String districtName, Double fromPrice, Double toPrice,
+                                                  String typeName, String roomNumber, String deadline, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Catalog> all = catalogRepository.findAll(pageable);
         List<Catalog> catalogList = all.getContent();
 
-        if (districtId != null)
-            catalogList = all.stream().filter(catalog -> catalog.getDistrict().getId().equals(districtId)).toList();
+        if (districtName != null)
+            catalogList = all.stream().filter(catalog -> {
+                return catalog.getDistrict().getNameUz().equals(districtName) || catalog.getDistrict().getNameRu().equals(districtName) ||catalog.getDistrict().getNameEn().equals(districtName);
+            }).toList();
         if (fromPrice != null)
             catalogList = all.stream().filter(catalog -> catalog.getPrice() >= fromPrice).toList();
         if (toPrice != null)
             catalogList = all.stream().filter(catalog -> catalog.getPrice() <= toPrice).toList();
-        if (typeId != null)
-            catalogList = all.stream().filter(catalog -> catalog.getType().getId().equals(typeId)).toList();
+        if (typeName != null)
+            catalogList = all.stream().filter(catalog -> {
+                return catalog.getType().getNameUz().equals(typeName) || catalog.getType().getNameRu().equals(typeName)||catalog.getType().getNameEn().equals(typeName);
+            }).toList();
         if (roomNumber != null)
             catalogList = all.stream().filter(catalog -> catalog.getNumberOfRoomsRu().equals(roomNumber) || catalog.getNumberOfRoomsUz().equals(roomNumber) || catalog.getNumberOfRoomsEn().equals(roomNumber)).toList();
         if (deadline != null)

@@ -291,10 +291,10 @@ public class CatalogController {
             schema = @Schema(type = "integer", defaultValue = "1")
     )
     public ResponseEntity<ApiResponse<?>> findAllWithOptionalFilters(
-            @RequestParam(value = "districtID", required = false) Long districtId,
+            @RequestParam(value = "districtName", required = false) String districtName,
             @RequestParam(value = "from", required = false) Double fromPrice,
             @RequestParam(value = "to", required = false) Double toPrice,
-            @RequestParam(value = "typeID", required = false) Long typeId,
+            @RequestParam(value = "typeName", required = false) String typeName,
             @RequestParam(value = "room-number", required = false) String roomNumber,
             @RequestParam(value = "deadline", required = false) String deadline,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -302,7 +302,7 @@ public class CatalogController {
             @Parameter(hidden = true)
             @RequestParam(value = "size", required = false, defaultValue = "12") Integer size
     ) {
-        return catalogService.findAll(lang, districtId, fromPrice, toPrice, typeId, roomNumber, deadline, page, size);
+        return catalogService.findAll(lang, districtName, fromPrice, toPrice, typeName, roomNumber, deadline, page, size);
     }
 
 
