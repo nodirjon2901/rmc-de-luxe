@@ -16,7 +16,7 @@ public interface BuildingRepository extends JpaRepository<Building, Long> {
     @Transactional
     @Modifying
     @Query(value = "update building set slug=:slug where id=:id", nativeQuery = true)
-    void updateSlug(@Param("slug") String slug, @Param("id") Long catalogId);
+    void updateSlug(@Param("slug") String slug, @Param("id") Long buildingId);
 
     Optional<Building> findBySlug(String slug);
 

@@ -57,15 +57,15 @@ public class BuildingService {
             building.setGallery(new ArrayList<>());
             building.setVideoList(new ArrayList<>());
             Building save = buildingRepository.save(building);
-            String slug = save.getId() + "-" + SlugUtil.makeSlug(save.getTitleEn());
-            if(photoList!=null && !photoList.isEmpty()){
+            String slug = save.getId() + "-" + SlugUtil.makeSlug(save.getTitleRu());
+            if (photoList != null && !photoList.isEmpty()) {
                 for (MultipartFile photoFile : photoList) {
                     Photo photo = photoService.save(photoFile);
                     photo.setBuilding(save);
                     save.getGallery().add(photo);
                 }
             }
-            if (videoList!=null && !videoList.isEmpty()){
+            if (videoList != null && !videoList.isEmpty()) {
                 for (MultipartFile videoFile : videoList) {
                     VideoFile video = Objects.requireNonNull(videoService.save(videoFile).getBody()).getData();
                     video.setBuilding(save);
@@ -167,6 +167,8 @@ public class BuildingService {
                 fromDb.setTitleUz(title.getUz());
             }
             if (title.getRu() != null) {
+                String slug = fromDb.getId() + SlugUtil.makeSlug(title.getRu());
+                fromDb.setSlug(slug);
                 fromDb.setTitleRu(title.getRu());
             }
             if (title.getEn() != null) {
