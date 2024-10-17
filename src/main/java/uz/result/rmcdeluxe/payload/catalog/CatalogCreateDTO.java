@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import uz.result.rmcdeluxe.entity.CatalogType;
 import uz.result.rmcdeluxe.entity.District;
 import uz.result.rmcdeluxe.entity.HouseType;
 import uz.result.rmcdeluxe.entity.Photo;
@@ -25,6 +26,8 @@ public class CatalogCreateDTO {
     Double price;
 
     String typeName;
+
+    CatalogType catalogType;
 
     Translation numberOfRooms;
 

@@ -282,13 +282,13 @@ public class BlogController {
             @RequestParam(value = "popular", required = false) Boolean popular,
             @RequestParam(value = "new", required = false) Boolean aNew,
             @RequestParam(value = "old", required = false) Boolean old,
-            @RequestParam(value = "typeID", required = false) Long typeId,
+            @RequestParam(value = "typeName", required = false) String typeName,
             @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
             @RequestHeader(value = "Accept-Language", required = false) String lang,
             @Parameter(hidden = true)
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
     ) {
-        return blogService.findAll(lang, page, size, main, popular, aNew, old, typeId);
+        return blogService.findAll(lang, page, size, main, popular, aNew, old, typeName);
     }
 
     @PutMapping(value = "/update", consumes = {"application/json"})

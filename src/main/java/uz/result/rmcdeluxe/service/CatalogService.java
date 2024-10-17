@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uz.result.rmcdeluxe.entity.Catalog;
+import uz.result.rmcdeluxe.entity.CatalogType;
 import uz.result.rmcdeluxe.entity.District;
 import uz.result.rmcdeluxe.entity.HouseType;
 import uz.result.rmcdeluxe.exception.AlreadyExistsException;
@@ -50,11 +51,14 @@ public class CatalogService {
         ApiResponse<CatalogResponseDTO> response = new ApiResponse<>();
         try {
             CatalogCreateDTO createDTO = objectMapper.readValue(json, CatalogCreateDTO.class);
-            Optional<Catalog> optionalCatalog = catalogRepository.findByName(createDTO.getName());
-            if (optionalCatalog.isPresent()) {
-                logger.warn("Catalog is already exists with name:{}", createDTO.getName());
-                throw new AlreadyExistsException("Catalog is already exists with name: " + createDTO.getName());
+            List<Catalog> optionalCatalogs = catalogRepository.findByCatalogType(createDTO.getCatalogType());
+            for (Catalog optionalCatalog : optionalCatalogs) {
+                if (optionalCatalog.getName().equals(createDTO.getName())) {
+                    logger.warn("Catalog is already exists with name:{}", createDTO.getName());
+                    throw new AlreadyExistsException("Catalog is already exists with name: " + createDTO.getName() + " in this catalogType: " + createDTO.getCatalogType());
+                }
             }
+
             if (createDTO.getPrice() < 0) {
                 logger.warn("Invalid price value: " + createDTO.getPrice());
                 throw new NotFoundException("Invalid price value: " + createDTO.getPrice());
@@ -124,7 +128,7 @@ public class CatalogService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<ApiResponse<?>> findAll(String lang, String districtName, Double fromPrice, Double toPrice,
+    public ResponseEntity<ApiResponse<?>> findAll(String lang, String districtName, Double fromPrice, Double toPrice, CatalogType catalogType,
                                                   String typeName, String roomNumber, String deadline, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Catalog> all = catalogRepository.findAll(pageable);
@@ -132,7 +136,7 @@ public class CatalogService {
 
         if (districtName != null)
             catalogList = all.stream().filter(catalog -> {
-                return catalog.getDistrict().getNameUz().equals(districtName) || catalog.getDistrict().getNameRu().equals(districtName) ||catalog.getDistrict().getNameEn().equals(districtName);
+                return catalog.getDistrict().getNameUz().equals(districtName) || catalog.getDistrict().getNameRu().equals(districtName) || catalog.getDistrict().getNameEn().equals(districtName);
             }).toList();
         if (fromPrice != null)
             catalogList = all.stream().filter(catalog -> catalog.getPrice() >= fromPrice).toList();
@@ -140,12 +144,14 @@ public class CatalogService {
             catalogList = all.stream().filter(catalog -> catalog.getPrice() <= toPrice).toList();
         if (typeName != null)
             catalogList = all.stream().filter(catalog -> {
-                return catalog.getType().getNameUz().equals(typeName) || catalog.getType().getNameRu().equals(typeName)||catalog.getType().getNameEn().equals(typeName);
+                return catalog.getType().getNameUz().equals(typeName) || catalog.getType().getNameRu().equals(typeName) || catalog.getType().getNameEn().equals(typeName);
             }).toList();
         if (roomNumber != null)
             catalogList = all.stream().filter(catalog -> catalog.getNumberOfRoomsRu().equals(roomNumber) || catalog.getNumberOfRoomsUz().equals(roomNumber) || catalog.getNumberOfRoomsEn().equals(roomNumber)).toList();
         if (deadline != null)
             catalogList = all.stream().filter(catalog -> catalog.getCompletionDateUz().equals(deadline) || catalog.getCompletionDateRu().equals(deadline) || catalog.getCompletionDateEn().equals(deadline)).toList();
+        if (catalogType != null)
+            catalogList = all.stream().filter(catalog -> catalog.getCatalogType().toString().equalsIgnoreCase(catalogType.name())).toList();
 
         if (lang == null || lang.equals("-")) {
             ApiResponse<List<CatalogResponseDTO>> response = new ApiResponse<>();
@@ -169,9 +175,12 @@ public class CatalogService {
                 });
         ApiResponse<CatalogResponseDTO> response = new ApiResponse<>();
         if (updateDTO.getName() != null) {
-            if (checkName(updateDTO.getName())) {
-                logger.warn("Catalog is already exists with name: " + updateDTO.getName());
-                throw new AlreadyExistsException("Catalog is already exists with name: " + updateDTO.getName());
+            List<Catalog> catalogList = catalogRepository.findByCatalogType(updateDTO.getCatalogType());
+            for (Catalog catalog : catalogList) {
+                if (catalog.getName().equals(updateDTO.getName())) {
+                    logger.warn("Catalog is already exists with name: " + updateDTO.getName());
+                    throw new AlreadyExistsException("Catalog is already exists with name: " + updateDTO.getName() + " in this catalogType: " + updateDTO.getCatalogType());
+                }
             }
             fromDb.setName(updateDTO.getName());
             String slug = fromDb.getId() + "-" + SlugUtil.makeSlug(updateDTO.getName());
@@ -227,15 +236,21 @@ public class CatalogService {
                 fromDb.setActive(updateDTO.isActive());
             }
         }
+        if (updateDTO.getCatalogType() != null) {
+            List<Catalog> catalogList = catalogRepository.findByCatalogType(updateDTO.getCatalogType());
+            for (Catalog catalog : catalogList) {
+                if (catalog.getName().equals(updateDTO.getName())) {
+                    throw new AlreadyExistsException("Catalog is already exists with name: " + updateDTO.getName() + " in this catalogType: " + updateDTO.getCatalogType());
+                }
+            }
+
+            fromDb.setCatalogType(updateDTO.getCatalogType());
+        }
 
 
         response.setData(new CatalogResponseDTO(catalogRepository.save(fromDb)));
         response.setMessage("Successfully updated");
         return ResponseEntity.ok(response);
-    }
-
-    private boolean checkName(String name) {
-        return catalogRepository.findByName(name).isPresent();
     }
 
     public ResponseEntity<ApiResponse<?>> delete(Long id) {

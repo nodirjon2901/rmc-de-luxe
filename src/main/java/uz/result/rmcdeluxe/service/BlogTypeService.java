@@ -3,6 +3,8 @@ package uz.result.rmcdeluxe.service;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.result.rmcdeluxe.entity.BlogType;
@@ -27,10 +29,19 @@ public class BlogTypeService {
 
     public ResponseEntity<ApiResponse<BlogTypeResponse>> create(BlogTypeCreateDTO createDTO) {
         ApiResponse<BlogTypeResponse> response = new ApiResponse<>();
-        BlogType type = new BlogType(createDTO);
-        response.setData(new BlogTypeResponse(typeRepository.save(type)));
-        response.setMessage("Successfully created");
-        return ResponseEntity.status(201).body(response);
+        try {
+            BlogType type = new BlogType(createDTO);
+            BlogType savedType = typeRepository.save(type);
+            response.setData(new BlogTypeResponse(savedType));
+            response.setMessage("Successfully created");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (DataIntegrityViolationException e) {
+            response.setMessage("Error: Duplicate entry for blog type name.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        } catch (Exception e) {
+            response.setMessage("Error: Unable to create blog type. Please try again later.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     public ResponseEntity<ApiResponse<?>> findById(Long id, String lang) {

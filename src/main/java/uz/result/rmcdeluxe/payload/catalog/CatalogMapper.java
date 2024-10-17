@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import uz.result.rmcdeluxe.entity.Catalog;
-import uz.result.rmcdeluxe.entity.District;
-import uz.result.rmcdeluxe.entity.HouseType;
-import uz.result.rmcdeluxe.entity.Photo;
+import uz.result.rmcdeluxe.entity.*;
 import uz.result.rmcdeluxe.exception.LanguageNotSupported;
 import uz.result.rmcdeluxe.payload.district.DistrictMapper;
 import uz.result.rmcdeluxe.payload.houseType.HouseTypeMapper;
@@ -33,6 +30,8 @@ public class CatalogMapper {
 
     HouseTypeMapper type;
 
+    CatalogType catalogType;
+
     String numberOfRooms;
 
     String completionDate;
@@ -47,6 +46,7 @@ public class CatalogMapper {
         this.district = new DistrictMapper(catalog.getDistrict(),lang);
         this.price = catalog.getPrice();
         this.type = new HouseTypeMapper(catalog.getType(),lang);
+        this.catalogType=catalog.getCatalogType();
         this.active = catalog.isActive();
         switch (lang.toLowerCase()) {
             case "uz": {

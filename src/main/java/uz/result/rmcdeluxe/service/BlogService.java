@@ -64,10 +64,10 @@ public class BlogService {
             Blog blog = new Blog(createDTO);
             blog.setActive(true);
             blog.setViewCounter(0);
-            blog.setType(typeRepository.findById(createDTO.getTypeId())
+            blog.setType(typeRepository.findByNameIgnoreCase(createDTO.getTypeName())
                     .orElseThrow(() -> {
-                        logger.warn("Type of blog is not found with id: {}", createDTO.getTypeId());
-                        return new NotFoundException("Type of blog is not found with id: " + createDTO.getTypeId());
+                        logger.warn("Type of blog is not found with name: {}", createDTO.getTypeName());
+                        return new NotFoundException("Type of blog is not found with name: " + createDTO.getTypeName());
                     }));
             List<BlogOption> optionList = blog.getOptions();
             for (int i = 0; i < optionList.size(); i++) {
@@ -146,7 +146,7 @@ public class BlogService {
     }
 
     public ResponseEntity<ApiResponse<?>> findAll(String lang, Integer page, Integer size, Boolean main,
-                                                  Boolean popular, Boolean aNew, Boolean old, Long typeId) {
+                                                  Boolean popular, Boolean aNew, Boolean old, String typeName) {
         List<Blog> blogList = new ArrayList<>();
         if (page != null) {
             Pageable pageable = PageRequest.of(page - 1, size);
@@ -173,8 +173,11 @@ public class BlogService {
                     .sorted(Comparator.comparing(Blog::getCreatedDate))
                     .collect(Collectors.toList());
         }
-        if (typeId != null)
-            blogList = blogList.stream().filter(blog -> blog.getType().getId().equals(typeId)).collect(Collectors.toList());
+        if (typeName != null)
+            blogList = blogList.stream().
+                    filter(blog -> blog.getType().getNameUz().equals(typeName) ||
+                                    blog.getType().getNameRu().equals(typeName) ||
+                                    blog.getType().getNameEn().equals(typeName)).collect(Collectors.toList());
 
         if (lang == null || lang.equals("-")) {
             ApiResponse<List<BlogResponseDTO>> response = new ApiResponse<>();
@@ -205,11 +208,11 @@ public class BlogService {
                     logger.warn("Blog is not found with id: {}", updateDTO.getId());
                     return new NotFoundException("Blog is not found with id: " + updateDTO.getId());
                 });
-        if (updateDTO.getTypeId() != null) {
-            fromDb.setType(typeRepository.findById(updateDTO.getTypeId())
+        if (updateDTO.getTypeName() != null) {
+            fromDb.setType(typeRepository.findByNameIgnoreCase(updateDTO.getTypeName())
                     .orElseThrow(() -> {
-                        logger.warn("Type is not found with id: {}", updateDTO.getTypeId());
-                        return new NotFoundException("Type is not found with id: " + updateDTO.getTypeId());
+                        logger.warn("Type is not found with name: {}", updateDTO.getTypeName());
+                        return new NotFoundException("Type is not found with name: " + updateDTO.getTypeName());
                     }));
         }
         if (updateDTO.isActive() != fromDb.isActive()) {

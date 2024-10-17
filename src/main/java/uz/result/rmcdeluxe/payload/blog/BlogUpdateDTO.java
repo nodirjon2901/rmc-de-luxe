@@ -18,7 +18,7 @@ public class BlogUpdateDTO {
 
     List<BlogOptionResponseDTO> options;
 
-    Long typeId;
+    String typeName;
 
     boolean active;
 

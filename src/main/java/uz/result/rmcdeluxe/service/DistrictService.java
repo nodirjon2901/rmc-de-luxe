@@ -3,6 +3,8 @@ package uz.result.rmcdeluxe.service;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.result.rmcdeluxe.entity.District;
@@ -26,10 +28,18 @@ public class DistrictService {
 
     public ResponseEntity<ApiResponse<DistrictResponseDTO>> create(DistrictCreateDTO createDTO) {
         ApiResponse<DistrictResponseDTO> response = new ApiResponse<>();
-        District district = new District(createDTO);
-        response.setData(new DistrictResponseDTO(districtRepository.save(district)));
-        response.setMessage("Successfully created");
-        return ResponseEntity.status(201).body(response);
+        try {
+            District district = new District(createDTO);
+            response.setData(new DistrictResponseDTO(districtRepository.save(district)));
+            response.setMessage("Successfully created");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (DataIntegrityViolationException e) {
+            response.setMessage("Error: Duplicate entry for district name.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        } catch (Exception e) {
+            response.setMessage("Error: Unable to create district. Please try again later.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     public ResponseEntity<ApiResponse<?>> findById(Long id, String lang) {

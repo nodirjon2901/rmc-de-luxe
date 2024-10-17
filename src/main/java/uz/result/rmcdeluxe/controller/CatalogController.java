@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import uz.result.rmcdeluxe.documentation.SwaggerConstants;
+import uz.result.rmcdeluxe.entity.CatalogType;
 import uz.result.rmcdeluxe.payload.ApiResponse;
 import uz.result.rmcdeluxe.payload.catalog.CatalogCreateDTO;
 import uz.result.rmcdeluxe.payload.catalog.CatalogMapper;
@@ -295,6 +296,7 @@ public class CatalogController {
             @RequestParam(value = "from", required = false) Double fromPrice,
             @RequestParam(value = "to", required = false) Double toPrice,
             @RequestParam(value = "typeName", required = false) String typeName,
+            @RequestParam(value = "catalogType", required = false) CatalogType catalogType,
             @RequestParam(value = "room-number", required = false) String roomNumber,
             @RequestParam(value = "deadline", required = false) String deadline,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -302,7 +304,7 @@ public class CatalogController {
             @Parameter(hidden = true)
             @RequestParam(value = "size", required = false, defaultValue = "12") Integer size
     ) {
-        return catalogService.findAll(lang, districtName, fromPrice, toPrice, typeName, roomNumber, deadline, page, size);
+        return catalogService.findAll(lang, districtName, fromPrice, toPrice,catalogType, typeName, roomNumber, deadline, page, size);
     }
 
 

@@ -24,7 +24,6 @@ public class Catalog {
     @Column(unique = true)
     String slug;
 
-    @Column(unique = true)
     String name;
 
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -40,6 +39,9 @@ public class Catalog {
     @ManyToOne
     @JsonIgnore
     HouseType type;
+
+    @Enumerated(EnumType.STRING)
+    CatalogType catalogType;
 
     String numberOfRoomsUz;
 
@@ -65,6 +67,7 @@ public class Catalog {
         }
         this.name = createDTO.getName();
         this.price = createDTO.getPrice();
+        this.catalogType = createDTO.getCatalogType();
         if (createDTO.getNumberOfRooms() != null) {
             this.numberOfRoomsUz = createDTO.getNumberOfRooms().getUz();
             this.numberOfRoomsRu = createDTO.getNumberOfRooms().getRu();

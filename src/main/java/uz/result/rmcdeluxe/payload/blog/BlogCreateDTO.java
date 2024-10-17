@@ -18,7 +18,7 @@ public class BlogCreateDTO {
 
     List<BlogOptionCreateDTO> options;
 
-    Long typeId;
+    String typeName;
 
     boolean main;
 

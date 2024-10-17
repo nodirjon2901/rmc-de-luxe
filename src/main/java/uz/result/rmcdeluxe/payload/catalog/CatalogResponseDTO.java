@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import uz.result.rmcdeluxe.entity.Catalog;
+import uz.result.rmcdeluxe.entity.CatalogType;
 import uz.result.rmcdeluxe.entity.Photo;
 import uz.result.rmcdeluxe.payload.Translation;
 import uz.result.rmcdeluxe.payload.district.DistrictResponseDTO;
@@ -31,6 +32,8 @@ public class CatalogResponseDTO {
 
     HouseTypeResponseDTO type;
 
+    CatalogType catalogType;
+
     Translation numberOfRooms;
 
     Translation completionDate;
@@ -45,6 +48,7 @@ public class CatalogResponseDTO {
         this.district = new DistrictResponseDTO(catalog.getDistrict());
         this.price = catalog.getPrice();
         this.type = new HouseTypeResponseDTO(catalog.getType());
+        this.catalogType=catalog.getCatalogType();
         this.active = catalog.isActive();
         this.numberOfRooms = new Translation(
                 catalog.getNumberOfRoomsUz(),

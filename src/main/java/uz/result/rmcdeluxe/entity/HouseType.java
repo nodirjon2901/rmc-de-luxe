@@ -21,10 +21,13 @@ public class HouseType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(unique = true)
     String nameUz;
 
+    @Column(unique = true)
     String nameRu;
 
+    @Column(unique = true)
     String nameEn;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "type", orphanRemoval = true)
