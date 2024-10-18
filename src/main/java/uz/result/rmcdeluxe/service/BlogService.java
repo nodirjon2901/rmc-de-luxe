@@ -74,7 +74,7 @@ public class BlogService {
                 optionList.get(i).setOrderNum(i);
             }
             Blog save = blogRepository.save(blog);
-            String slug = save.getId() + "-" + SlugUtil.makeSlug(save.getOptions().get(0).getTitleRu());
+            String slug = save.getId() + "-" + SlugUtil.makeSlug(save.getTitleRu());
             blogRepository.updateSlugById(save.getId(), slug);
             save.setSlug(slug);
             BlogResponseDTO responseDTO = new BlogResponseDTO(save);
@@ -176,8 +176,8 @@ public class BlogService {
         if (typeName != null)
             blogList = blogList.stream().
                     filter(blog -> blog.getType().getNameUz().equals(typeName) ||
-                                    blog.getType().getNameRu().equals(typeName) ||
-                                    blog.getType().getNameEn().equals(typeName)).collect(Collectors.toList());
+                            blog.getType().getNameRu().equals(typeName) ||
+                            blog.getType().getNameEn().equals(typeName)).collect(Collectors.toList());
 
         if (lang == null || lang.equals("-")) {
             ApiResponse<List<BlogResponseDTO>> response = new ApiResponse<>();
@@ -220,6 +220,20 @@ public class BlogService {
         }
         if (updateDTO.isMain() != fromDb.isMain()) {
             fromDb.setMain(fromDb.isMain());
+        }
+        if (updateDTO.getTitle() != null) {
+            Translation title = updateDTO.getTitle();
+            if (title.getUz() != null) {
+                fromDb.setTitleUz(title.getUz());
+            }
+            if (title.getRu() != null) {
+                fromDb.setTitleRu(title.getRu());
+                String slug = fromDb.getId() + "-" + SlugUtil.makeSlug(title.getRu());
+                fromDb.setSlug(slug);
+            }
+            if (title.getEn() != null) {
+                fromDb.setTitleEn(title.getEn());
+            }
         }
         if (updateDTO.getOptions() != null && !updateDTO.getOptions().isEmpty()) {
             List<BlogOptionResponseDTO> options = updateDTO.getOptions();

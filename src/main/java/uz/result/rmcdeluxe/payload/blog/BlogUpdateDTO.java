@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import uz.result.rmcdeluxe.payload.Translation;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ import java.util.List;
 public class BlogUpdateDTO {
 
     Long id;
+
+    Translation title;
 
     List<BlogOptionResponseDTO> options;
 

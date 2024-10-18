@@ -28,6 +28,15 @@ public class Blog {
     @Column(unique = true)
     String slug;
 
+    @Column(length = 600)
+    String titleUz;
+
+    @Column(length = 600)
+    String titleRu;
+
+    @Column(length = 600)
+    String titleEn;
+
     @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
     List<BlogOption> options;
 
@@ -57,6 +66,11 @@ public class Blog {
             return;
         }
         this.main = createDTO.isMain();
+        if (createDTO.getTitle() != null) {
+            this.titleUz = createDTO.getTitle().getUz();
+            this.titleRu = createDTO.getTitle().getRu();
+            this.titleEn = createDTO.getTitle().getEn();
+        }
         if (createDTO.getOptions() != null && !createDTO.getOptions().isEmpty()) {
             if (this.options == null) {
                 this.options = new ArrayList<>();

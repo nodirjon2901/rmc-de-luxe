@@ -1,5 +1,6 @@
 package uz.result.rmcdeluxe.payload.blog;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,8 +18,10 @@ public class BlogOptionResponseDTO {
 
     Long id;
 
+    @JsonProperty("description")
     Translation title;
 
+    @JsonProperty("text")
     Translation description;
 
     Integer orderNum;
@@ -27,7 +30,7 @@ public class BlogOptionResponseDTO {
 
     public BlogOptionResponseDTO(BlogOption option) {
         this.id = option.getId();
-        this.orderNum= option.getOrderNum();
+        this.orderNum = option.getOrderNum();
         this.photo = option.getPhoto();
         this.title = new Translation(
                 option.getTitleUz(),

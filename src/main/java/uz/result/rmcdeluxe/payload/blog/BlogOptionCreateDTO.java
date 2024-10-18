@@ -1,5 +1,6 @@
 package uz.result.rmcdeluxe.payload.blog;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,8 +15,10 @@ import uz.result.rmcdeluxe.payload.Translation;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BlogOptionCreateDTO {
 
+    @JsonProperty("description")
     Translation title;
 
+    @JsonProperty("text")
     Translation description;
 
     Integer orderNum;

@@ -1,5 +1,6 @@
 package uz.result.rmcdeluxe.payload.blog;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,8 +18,10 @@ public class BlogOptionMapper {
 
     Long id;
 
+    @JsonProperty("description")
     String title;
 
+    @JsonProperty("text")
     String description;
 
     Integer orderNum;
@@ -27,7 +30,7 @@ public class BlogOptionMapper {
 
     public BlogOptionMapper(BlogOption option, String lang) {
         this.id = option.getId();
-        this.orderNum= option.getOrderNum();
+        this.orderNum = option.getOrderNum();
         this.photo = option.getPhoto();
         switch (lang.toLowerCase()) {
             case "uz": {

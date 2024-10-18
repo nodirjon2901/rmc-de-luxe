@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import uz.result.rmcdeluxe.entity.Blog;
 import uz.result.rmcdeluxe.entity.BlogType;
+import uz.result.rmcdeluxe.payload.Translation;
 
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,8 @@ public class BlogResponseDTO {
 
     String slug;
 
+    Translation title;
+
     List<BlogOptionResponseDTO> options;
 
     BlogTypeResponse type;
@@ -36,15 +39,16 @@ public class BlogResponseDTO {
 
     boolean main;
 
-    public BlogResponseDTO(Blog blog){
-        this.id= blog.getId();
-        this.slug= blog.getSlug();
-        this.type=new BlogTypeResponse(blog.getType());
-        this.createdDate=blog.getCreatedDate();
-        this.viewCounter= blog.getViewCounter();
-        this.active= blog.isActive();
-        this.main= blog.isMain();
-        this.options=blog.getOptions().stream()
+    public BlogResponseDTO(Blog blog) {
+        this.id = blog.getId();
+        this.slug = blog.getSlug();
+        this.title = new Translation(blog.getTitleUz(), blog.getTitleRu(), blog.getTitleEn());
+        this.type = new BlogTypeResponse(blog.getType());
+        this.createdDate = blog.getCreatedDate();
+        this.viewCounter = blog.getViewCounter();
+        this.active = blog.isActive();
+        this.main = blog.isMain();
+        this.options = blog.getOptions().stream()
                 .map(BlogOptionResponseDTO::new)
                 .collect(Collectors.toList());
     }
