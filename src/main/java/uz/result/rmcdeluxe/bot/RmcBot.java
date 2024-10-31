@@ -133,6 +133,7 @@ public class RmcBot extends TelegramLongPollingBot {
             case INSTAGRAM_FOOTER -> "Instagram (Footer)";
             case TELEGRAM_FOOTER -> "Telegram (Footer)";
             case FACEBOOK_FOOTER -> "FaceBook (Footer)";
+            case YOUTUBE -> "You tube";
             default -> button.name();
         };
     }
