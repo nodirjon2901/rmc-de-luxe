@@ -7,10 +7,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import uz.result.rmcdeluxe.entity.Application;
-import uz.result.rmcdeluxe.entity.ApplicationOfInvestment;
-import uz.result.rmcdeluxe.entity.Button;
-import uz.result.rmcdeluxe.entity.Counter;
+import uz.result.rmcdeluxe.entity.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +51,25 @@ public class RmcBot extends TelegramLongPollingBot {
                         "\uD83D\uDCDE *Номер телефона*: " + application.getPhoneNum() + "\n" +
                         "\uD83D\uDCE7 *Электронная почта*: " + application.getEmail() + "\n" +
                         "\uD83D\uDCAC *Вопрос*: " + application.getQuestion() + "\n"
+        );
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleSendApplicationForToRent(ApplicationForToRent application) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(groupChatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText(
+                "*Новое заявка*\n\n" +
+                        "\uD83D\uDC64 *Тип недвижимости*: " + application.getPropertyType() + "\n" +
+                        "\uD83D\uDCDE *Комнатность*: " + application.getNumberOfRoom() + "\n" +
+                        "\uD83D\uDCE7 *Площадь*: " + application.getArea() + "\n" +
+                        "\uD83D\uDCAC *Номер телефона*: " + application.getPhoneNumber() + "\n" +
+                        "\uD83D\uDCCD *Адрес*: " + application.getAddress() + "\n"
         );
         try {
             execute(sendMessage);

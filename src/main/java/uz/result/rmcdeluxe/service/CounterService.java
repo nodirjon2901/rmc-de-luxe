@@ -8,6 +8,7 @@ import uz.result.rmcdeluxe.bot.RmcBot;
 import uz.result.rmcdeluxe.entity.Button;
 import uz.result.rmcdeluxe.entity.Counter;
 import uz.result.rmcdeluxe.payload.ApiResponse;
+import uz.result.rmcdeluxe.repository.ApplicationForToRentRepository;
 import uz.result.rmcdeluxe.repository.ApplicationOfInvestmentRepository;
 import uz.result.rmcdeluxe.repository.ApplicationRepository;
 import uz.result.rmcdeluxe.repository.CounterRepository;
@@ -30,6 +31,8 @@ public class CounterService {
 
     private final ApplicationOfInvestmentRepository applicationOfInvestmentRepository;
 
+    private final ApplicationForToRentRepository applicationForToRentRepository;
+
     public ResponseEntity<ApiResponse<?>> addCallNumber(Button button) {
         ApiResponse<?> response = new ApiResponse<>();
         Counter counter = Counter.builder()
@@ -42,7 +45,7 @@ public class CounterService {
     }
 
 
-//            @Scheduled(cron = "0 * * * * *")//every minute
+    //            @Scheduled(cron = "0 * * * * *")//every minute
     @Scheduled(cron = "0 0 0 * * MON", zone = "Asia/Tashkent")
     public void checkAndSendCounter() {
         LocalDateTime now = LocalDateTime.now();
@@ -68,7 +71,8 @@ public class CounterService {
 
         counterRepository.deleteAll(counterList);
         Long applicationCount = applicationRepository.countApplicationInOneWeek(oneWeekAgo, now) +
-                applicationOfInvestmentRepository.countApplicationInOneWeek(oneWeekAgo, now);
+                applicationOfInvestmentRepository.countApplicationInOneWeek(oneWeekAgo, now) +
+                applicationForToRentRepository.countApplicationInOneWeek(oneWeekAgo, now);
         bot.sendCounter(savedCounters, applicationCount);
     }
 
