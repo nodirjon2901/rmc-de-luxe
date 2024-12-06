@@ -14,6 +14,10 @@ public enum Button {
 
     FACEBOOK_FOOTER,// Facebook icon on footer section
 
-    YOUTUBE // You tube icon
+    YOUTUBE, // You tube icon
+
+    PASS, // Сдать button
+
+    SELL // Продать
 
 }

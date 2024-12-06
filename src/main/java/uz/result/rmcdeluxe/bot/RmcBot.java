@@ -134,6 +134,8 @@ public class RmcBot extends TelegramLongPollingBot {
             case TELEGRAM_FOOTER -> "Telegram (Footer)";
             case FACEBOOK_FOOTER -> "FaceBook (Footer)";
             case YOUTUBE -> "You tube";
+            case PASS -> "Сдать";
+            case SELL -> "Продать";
             default -> button.name();
         };
     }

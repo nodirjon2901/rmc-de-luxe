@@ -1,19 +1,35 @@
 {
+  "title": {
+    "uz": "Uzbek title",
+    "ru": "Russian title",
+    "en": "English title"
+  },
   "options": [
     {
-      "title": {
-        "uz": "string",
-        "ru": "string",
-        "en": "string"
-      },
       "description": {
-        "uz": "string",
-        "ru": "string",
-        "en": "string"
+        "uz": "Uzbek description",
+        "ru": "Russian description",
+        "en": "English description"
       },
-      "orderNum": 0
+      "text": {
+        "uz": "Uzbek text",
+        "ru": "Russian text",
+        "en": "English text"
+      }
+    },
+    {
+      "description": {
+        "uz": "Uzbek description 2",
+        "ru": "Russian description 2",
+        "en": "English description 2"
+      },
+      "text": {
+        "uz": "Uzbek text 2",
+        "ru": "Russian text 2",
+        "en": "English text 2"
+      }
     }
   ],
-  "typeId": 1,
+  "typeName": "blogType",
   "main": true
 }
