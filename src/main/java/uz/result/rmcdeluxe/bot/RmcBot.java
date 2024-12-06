@@ -46,7 +46,7 @@ public class RmcBot extends TelegramLongPollingBot {
         sendMessage.setChatId(groupChatId);
         sendMessage.setParseMode("Markdown");
         sendMessage.setText(
-                "*Новое заявка*\n\n" +
+                "*Новая заявка*\n\n" +
                         "\uD83D\uDC64 *ФИО*: " + application.getFullName() + "\n" +
                         "\uD83D\uDCDE *Номер телефона*: " + application.getPhoneNum() + "\n" +
                         "\uD83D\uDCE7 *Электронная почта*: " + application.getEmail() + "\n" +
@@ -64,7 +64,7 @@ public class RmcBot extends TelegramLongPollingBot {
         sendMessage.setChatId(groupChatId);
         sendMessage.setParseMode("Markdown");
         sendMessage.setText(
-                "*Новое заявка*\n\n" +
+                "*Новая заявка*\n\n" +
                         "\uD83D\uDC64 *Тип недвижимости*: " + application.getPropertyType() + "\n" +
                         "\uD83D\uDCDE *Комнатность*: " + application.getNumberOfRoom() + "\n" +
                         "\uD83D\uDCE7 *Площадь*: " + application.getArea() + "\n" +
@@ -83,7 +83,7 @@ public class RmcBot extends TelegramLongPollingBot {
         sendMessage.setChatId(groupChatId);
         sendMessage.setParseMode("Markdown");
         sendMessage.setText(
-                "*Новое заявка на инвестиции*\n\n" +
+                "*Новая заявка на инвестиции*\n\n" +
                         "\uD83D\uDC64 *ФИО*: " + application.getFullName() + "\n" +
                         "\uD83C\uDFE2 *Название компании*: " + application.getCompanyName() + "\n" +
                         "\uD83D\uDCDE *Номер телефона*: " + application.getPhoneNum() + "\n" +
