@@ -64,7 +64,26 @@ public class RmcBot extends TelegramLongPollingBot {
         sendMessage.setChatId(groupChatId);
         sendMessage.setParseMode("Markdown");
         sendMessage.setText(
-                "*Новая заявка*\n\n" +
+                "*Заявка на сдачу недвижимости*\n\n" +
+                        "\uD83D\uDC64 *Тип недвижимости*: " + application.getPropertyType() + "\n" +
+                        "\uD83D\uDCDE *Комнатность*: " + application.getNumberOfRoom() + "\n" +
+                        "\uD83D\uDCE7 *Площадь*: " + application.getArea() + "\n" +
+                        "\uD83D\uDCAC *Номер телефона*: " + application.getPhoneNumber() + "\n" +
+                        "\uD83D\uDCCD *Адрес*: " + application.getAddress() + "\n"
+        );
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleSendApplicationForToSell(ApplicationForToRent application) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(groupChatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText(
+                "*Заявка на продажу недвижимости*\n\n" +
                         "\uD83D\uDC64 *Тип недвижимости*: " + application.getPropertyType() + "\n" +
                         "\uD83D\uDCDE *Комнатность*: " + application.getNumberOfRoom() + "\n" +
                         "\uD83D\uDCE7 *Площадь*: " + application.getArea() + "\n" +

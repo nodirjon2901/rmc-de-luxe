@@ -37,6 +37,13 @@ public class ApplicationController {
         return applicationService.createToRentApp(applicationForToRent);
     }
 
+    @PostMapping("/to-sell/create")
+    public ResponseEntity<ApiResponse<ApplicationForToRent>> createToSellApp(
+            @RequestBody ApplicationForToRent applicationForToRent
+    ) {
+        return applicationService.createToSellApp(applicationForToRent);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable Long id

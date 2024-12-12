@@ -43,6 +43,15 @@ public class ApplicationService {
         return ResponseEntity.status(201).body(response);
     }
 
+    public ResponseEntity<ApiResponse<ApplicationForToRent>> createToSellApp(ApplicationForToRent applicationForToRent) {
+        ApiResponse<ApplicationForToRent> response = new ApiResponse<>();
+        ApplicationForToRent save = applicationForToRentRepository.save(applicationForToRent);
+        bot.handleSendApplicationForToRent(save);
+        response.setMessage("Successfully created");
+        response.setData(save);
+        return ResponseEntity.status(201).body(response);
+    }
+
     public ResponseEntity<ApiResponse<ApplicationOfInvestment>> createInvApplication(ApplicationOfInvestment applicationOfInvestment) {
         ApiResponse<ApplicationOfInvestment> response = new ApiResponse<>();
         ApplicationOfInvestment save = applicationOfInvestmentRepository.save(applicationOfInvestment);
