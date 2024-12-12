@@ -46,7 +46,7 @@ public class ApplicationService {
     public ResponseEntity<ApiResponse<ApplicationForToRent>> createToSellApp(ApplicationForToRent applicationForToRent) {
         ApiResponse<ApplicationForToRent> response = new ApiResponse<>();
         ApplicationForToRent save = applicationForToRentRepository.save(applicationForToRent);
-        bot.handleSendApplicationForToRent(save);
+        bot.handleSendApplicationForToSell(save);
         response.setMessage("Successfully created");
         response.setData(save);
         return ResponseEntity.status(201).body(response);
